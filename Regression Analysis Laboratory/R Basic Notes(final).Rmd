@@ -1,0 +1,585 @@
+---
+title: "The Basics of the R Programming Language"
+author: "Charlene Garridos"
+date: '2023-04-27'
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+    highlight: tango
+---
+
+# R Basic
+# Data in R
+This **<-** operator is used to assign names
+```{r, echo=TRUE}
+my_sum <- 3+3 # store the result
+my_sum +3 
+```
+
+```{r, echo=TRUE}
+my_sum <- 3+3
+my_list <- list
+my_sum +3
+```
+
+```{r, echo=TRUE}
+my_sum # shows the value of my_sum
+```
+
+```{r, echo=TRUE}
+(new_sum <- my_sum + 3) # assign my_sum + 3 to new_sum and show its value
+```
+
+```{r, echo=TRUE}
+(another_sum <- 5+6)
+```
+
+## Data Types
+The **typeof()** function can be used to see the type of a single scalar value.
+
+**Numeric data** can be in integer form or double (decimal) form.
+```{r, echo=TRUE}
+my_integer <- 1L # integers can be signified by adding an 'L' to the end
+typeof(my_integer)
+```
+
+```{r, echo=TRUE}
+my_integer <- 9
+typeof(my_integer)
+```
+**Character data** is text data surrounded by single or double quotes.
+```{r, echo=TRUE}
+my_character <- "This is Text"
+typeof(my_character)
+```
+**Logical data** takes the form TRUE or FALSE.
+```{r, echo=TRUE}
+(my_logical <- FALSE)
+```
+
+```{r, echo=TRUE}
+typeof(my_logical)
+```
+
+```{r, echo=TRUE}
+my_double <- 5.6
+typeof(my_double)
+```
+
+## Homogeneous Data Structure
+**Vectors** are one-dimensional structures that carry the same type of data and are denoted by the function **c()**. The type of the vector may also be checked with the **typeof()** function, however the **str()** method can display both the contents and the type of the vector.
+```{r, echo=TRUE}
+double_vec <- c(3.1, 31, 311, 3111, 3.111)
+str(double_vec)
+```
+**Categorical data**, which has a finite number of possible values, can be represented or stored as a factor vector to facilitate grouping and processing.
+```{r, echo=TRUE}
+categories <- factor(c("C", "H", "A", "R", "L"))
+str(categories)
+```
+
+```{r, echo=TRUE}
+categories_char <- c("C", "H", "A", "R", "L")
+str(categories_char)
+```
+
+```{r, echo=TRUE}
+ranking <- c("Medium", "High", "Low") # character vector, factors can be given order.
+str(ranking)
+```
+
+```{r, echo=TRUE}
+# turn it into an ordered factor
+ranking_factors <- ordered(ranking, levels = c("Low", "Medium", "High")) 
+str(ranking_factors)
+```
+The **length()** function returns the number of entries or elements in a vector.
+```{r, echo=TRUE}
+length(categories)
+```
+
+```{r, echo=TRUE}
+length(ranking_factors)
+```
+
+```{r, echo=TRUE}
+(my_sequence <- 1:10) # Simple numeric sequence vectors can be created using shorthand notation.
+```
+
+```{r, echo=TRUE}
+(my_sequence <- seq(from = 1, to = 10))
+```
+
+```{r, echo=TRUE}
+my_seq_two <- seq(from = 1, to = 10, by = 5)
+my_seq_two
+```
+
+```{r,echo=TRUE}
+my_seq_three <- seq(from = 1, to = 10, by = 2)
+my_seq_three
+```
+
+```{r, echo=TRUE}
+vec <- 1:5 # numeric sequence vector
+str(vec)
+```
+
+```{r, echo=TRUE}
+new_vec <- c(vec, "hello") # creating a new vector containing vec and the character "hello"
+str(new_vec) # numeric values have been coerced into their character equivalents
+```
+
+```{r, echo=TRUE}
+# attempt a mixed logical and numeric, sometimes logical or factor types will be coerced to numeric.
+mix <- c(TRUE, 6)
+str(mix) # logical has been converted to binary numeric (TRUE = 1)
+```
+
+```{r, echo=TRUE}
+new_categories <- c(categories, 1) # try to add a numeric to our previous categories factor vector
+str(new_categories) # categories have been coerced to background integer representations
+```
+
+```{r, echo=TRUE}
+str(categories)
+```
+**Matrices** are two-dimensional data structures of the same type that are created by determining the number of rows and columns in a vector. Data is read into the matrix down the columns, from left to right. It are rarely used for non-numeric data types.
+```{r, echo=TRUE}
+(m <- matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2)) # create a 2x2 matrix with the first four integers
+```
+**Arrays** are n-dimensional data structures with the same data type and are not used extensively by most R users.
+```{r, echo=TRUE}
+(m <- matrix(vec, nrow = 5, ncol = 2))
+```
+
+## Heterogeneous Data Structure
+**Lists** are one-dimensional data structures that can take data of any type.List elements can be any data type and any dimension. Each element can be given a name.
+```{r, echo=TRUE}
+my_list <- list(6, TRUE, "hello")
+str(my_list)
+```
+
+```{r, echo=TRUE}
+new_list <- list(scalar = 6, vector = c("Heloo", "Goodbye"), 
+                 matrix = matrix(1:4, nrow = 2, ncol = 2))
+str(new_list)
+```
+This symbol **$** is used to accesses the named list elements
+```{r, echo=TRUE}
+new_list$matrix
+```
+
+```{r, echo=TRUE}
+new_list$vec
+```
+**Dataframes** are the most used data structure in R, due to its similarity to data tables found in databases and spreadsheets. They are effectively a named list of vectors of the same length, with each vector as a column. As such, a dataframe is very similar in nature to a typical database table or spreadsheet
+```{r, echo=TRUE}
+names <- c("Charl", "Garridos") # two vectors of different types but same length
+ages <- c(20, 20)
+(df <- data.frame(names, ages)) # create a dataframe
+```
+
+```{r, echo=TRUE}
+str(df) # get types of columns
+```
+
+```{r, echo=TRUE}
+dim(df) # get dimensions of df
+```
+
+# Working with Data frames
+## Loading and Tidying Data in Dataframes
+```{r, echo=TRUE}
+# url of data set
+url <- "https://raw.githubusercontent.com/msuiitdmsgabriel/datasets-regression/main/salespeople.csv" 
+```
+The **read.csv()** function can accept a URL address of the file if it is online.
+```{r, echo=TRUE}
+salespeople <- read.csv(url) #load the data set and store it as a dataframe called salespeople
+local_salespeople <- read.csv("salespeople.csv")
+```
+
+The function head, which displays thee first rows of a dataframe, has only one required argument x: the name of the dataframe
+```{r, echo=TRUE}
+high_sales <- subset(salespeople, subset = sales >= 700) 
+head(high_sales)
+```
+
+```{r, eval=FALSE}
+# to select specific columns use the select argument
+subset(salespeople, select = c("sales", "performance")) 
+```
+the **head()** function to display just the first few rows.
+```{r, echo=TRUE}
+dim(salespeople)
+```
+
+```{r, echo=TRUE}
+head(salespeople) # hundreds of rows, so view first few
+```
+View a specific column by using symbol **$**, and use **square brackets** to view a specific entry.
+```{r, echo=TRUE}
+salespeople$sales[6]
+```
+
+```{r, echo=TRUE}
+salespeople$sales
+```
+
+```{r, echo=TRUE}
+View(salespeople)
+```
+Alternatively, use a **[row, column]** index to get a specific entry in the dataframe.
+```{r}
+salespeople[34, 4]
+```
+
+```{r, echo=TRUE}
+salespeople[34,]
+```
+
+```{r, echo=TRUE}
+salespeople[,4]
+```
+Use **str()** function to view the data type.
+```{r, echo=TRUE}
+str(salespeople)
+```
+Use **summary()**, to see a statistical summary of each column, which depicts various statistics depending on the type of the column
+```{r, echo=TRUE}
+summary(salespeople)
+```
+
+```{r, echo=TRUE}
+sum(is.na(salespeople)) #confirm no NAs
+```
+
+```{r, eval=FALSE}
+is.na(salespeople)
+```
+**complete.cases()** function identifies the rows that have no NAs, and then select those rows from the dataframe based on that condition
+```{r, echo=TRUE}
+complete.cases(salespeople)
+```
+
+```{r, eval=FALSE}
+salespeople[complete.cases(salespeople),]
+```
+
+```{r, echo=TRUE}
+salespeople <- salespeople[complete.cases(salespeople),]
+```
+
+```{r, eval=FALSE}
+is.na(salespeople)
+```
+
+```{r, echo=TRUE}
+sum(is.na(salespeople))
+```
+Use the **unique()** function to see the unique values of a vector or column.
+```{r, echo=TRUE}
+unique(salespeople$performance)
+```
+to change the type of a column in a dataframe, use the **as.numeric(), as.character(), as.logical() or as.factor()** functions. 
+```{r, echo=TRUE}
+salespeople$performance
+```
+
+```{r, echo=TRUE}
+as.factor(salespeople$performance)
+```
+
+```{r, echo=TRUE}
+salespeople$performance <- as.factor(salespeople$performance)
+str(salespeople)
+```
+## Manipulating Dataframes
+The use of **==** is to test for precise equality. Similarly, selevting columns are based on inequalities (> for ‘greater than’, < for ‘less than’, >= for ‘greater than or equal to’, <= for ‘less than or equal to’, or != for ‘not equal to’).
+```{r, echo=TRUE}
+(sales_720 <- subset(salespeople, subset = sales == 720))
+```
+
+```{r, echo=TRUE}
+unique(salespeople$sales)
+```
+
+```{r, echo=TRUE}
+(subset(salespeople, subset = sales >= 700))
+```
+
+```{r,echo=TRUE}
+salespeople_sales_part <- subset(salespeople, select = c("sales", "performance"))
+head(salespeople_sales_part)
+```
+
+head(salespeople_sales_perf)
+
+```{r, echo=TRUE}
+low_sales <- subset(salespeople, subset = sales < 400)
+```
+
+```{r, echo=TRUE}
+# binds the rows of low_sales and high_sales together
+low_and_high_sales = rbind(low_sales, high_sales) 
+head(low_and_high_sales)
+```
+
+```{r, echo=TRUE}
+head(high_sales)
+```
+
+```{r, echo=TRUE}
+head(low_and_high_sales)
+```
+To select specific columns use the **select argument**.
+```{r, echo=TRUE}
+# two dataframes with two columns each
+sales_perf <- subset(salespeople, select = c("sales", "performance")) 
+prom_custrate <- subset(salespeople, select =  c("promoted", "customer_rate"))
+```
+
+```{r, echo=TRUE}
+# bind the columns to create a dataframes with four
+full_df <- cbind(sales_perf, prom_custrate)  
+head(full_df)
+```
+
+```{r, echo=TRUE}
+head(sales_perf)
+```
+
+```{r, echo=TRUE}
+head(prom_custrate)
+```
+
+```{r, echo=TRUE}
+head(full_df)
+```
+
+```{r, echo=TRUE}
+head(full_df, n=5)
+```
+# Functions, Packages and Libraries
+## Using functions
+**Functions** are operations that take certain defined inputs and return an output. It exist to perform common useful operations and usually take one or more arguments. Often there are a large number of arguments that a function can take, but many are optional and not required to be specified by the user. A second argument is optional, n: the number of rows to display. If n is not entered, it is assumed to have the default value n = 6. When running a function, you can either specify the arguments by name or you can enter them in order without their names. If you enter without naming, R expects the arguments to be entered in exactly the right order.
+```{r, echo=TRUE}
+head(salespeople) # see the head of salespeople, with the default of six rows
+```
+
+```{r, echo=TRUE}
+head(x = salespeople)
+```
+
+```{r, echo=TRUE}
+head(salespeople, 3) # see fewer rows - arguments need to be in the right order if not named
+```
+This case is when you don't know the right order, name your arguments and you can put them in any order
+```{r, echo=TRUE}
+head(x = salespeople, n = 4) 
+```
+
+```{r, echo=TRUE}
+head(n = 6, x = salespeople)
+```
+## Help with Functions
+Type **help(head)** or **?head** which will display the results in the Help browser window in Rstudio. Alternatively you can open the Help browser window directly in Rstudio and do a search there. Users can write their own functions to perform tasks that are helpful to their objective. Functions are not limited to those that come packaged in R.
+The help page normally shows the following:
+
+  - Description of the purpose of the function
+
+  - Usage examples, so you can quickly see how it is used
+
+  - Arguments list so you can see the names and order of arguments
+
+  - Details or notes on further considerations on use
+
+  - Expected value of the output (for example head() is expected to return a similar object to its first input x)
+
+  - Examples to help orient you further (sometimes examples can be very abstract in nature and not so helpful to users)
+```{r, echo=TRUE}
+help()
+```
+
+```{r, echo=TRUE}
+help(head)
+```
+
+```{r, echo=TRUE}
+?head
+```
+## Writing Your Own Functions
+Experienced programmers in most languages subscribe to a principle called **DRY (Don't Repeat Yourself)**.Whenever a task needs to be done repeatedly, it is poor practice to write the same code numerous times.
+```{r, echo=TRUE}
+df_report <- function(df){paste("This dataframe contains", nrow(df), 
+                                "rows and", ncol(df), "columns. There are", sum(is.na(df)), 
+                                "NA entries")} # create df_report function
+```
+
+```{r, echo=TRUE}
+df_report(mtcars)
+```
+
+```{r, echo=TRUE}
+paste("This is how the paste", "functioning works")
+```
+## Installing Packages
+The R programming language allows users to write and share their own functions and resources via packages, which are additional modules that can be easily installed to make resources available that are not in the base R installation. Use functions from both base R and popular packages, such as the **MASS package** for statistical modeling. To use an external package like MASS, it must be installed into the user's package library using the **"install.packages()"** command in the R console, which will download and install the package from the internet repository for R packages (CRAN), including any other packages that may be required.
+```{r, error=TRUE}
+my_packages <- c("MASS", "DescTools", "dplyr")
+install.packages(my_packages)
+```
+
+```{r}
+installed.packages("MASS")
+```
+ 
+```{r}
+my_packages <- c("DescTools", "dplyr")
+```
+
+```{r}
+installed.packages("my_packages")
+```
+## Using Packages
+```{r}
+library(MASS)
+```
+
+```{r}
+help(package = "MASS")
+```
+## The Pipe Operator
+The **pipe operator** makes code more natural to read and write and reduces the typical computing problem of many nested operations inside parentheses. It comes inside many R packages, particularly magrittr and dplyr.
+
+For instance, imagine we wanted to do the following two operations in one command:
+
+1. Subset salespeople to only the sales values of those with sales less than 500
+
+2. Take the mean of those values
+```{r}
+sales <- subset(salespeople, subset = sales < 500)
+```
+
+```{r}
+mean(sales$sales)
+```
+
+```{r}
+mean(subset(salespeople, subset = sales <500) $ sales)
+```
+
+```{r}
+mean(subset(salespeople$sales, subset = salespeople$sales<500))
+```
+This is nested and needs to be read from the inside out in order to align with the instructions. The **pipe operator %>%** takes the command that comes before it and places it inside the function that follows it (by default as the first argument). This reduces complexity and allows you to follow the logic more clearly.
+
+```{r}
+library(magrittr) # load magrittr library to get the pipe operator
+```
+
+```{r}
+# use the pipe operator to lay out the steps more logically
+subset(salespeople$sales, subset = salespeople$sales < 500) %>% 
+mean()
+```
+
+```{r}
+library(magrittr)
+subset(salespeople, subset = sales < 500)$sales %>%
+mean()
+```
+
+```{r}
+salespeople$sales %>% # start with all data
+  subset(subset = salespeople$sales < 500) %>% # get the subsetted data
+  mean() %>% # take the mean value
+  round() # round to the nearest time
+```
+# Errors, Warnings and Messages
+**Errors** are serious problems which usually result in the halting of your code and a failure to return your requested output. They usually come with an indication of the source of the error, and these can sometimes be easy to understand and sometimes frustratingly vague and abstract. 
+```{r, error=TRUE}
+subset(salespeople, subset = sales = 700)
+```
+The error message helps on what is wrong. It is an error to used sales = 720 as a condition to subset your data, when it should be sales == 720 for precise equality.
+```{r}
+subset(salespeople, subset = sales == 700)
+```
+ 
+```{r, error=TRUE}
+head[salespeople]
+```
+ 
+```{r}
+head(salespeople)
+```
+ 
+```{r}
+salespeople[1,0]
+```
+**Warnings** are less serious and usually alert you to something that you might be overlooking and which could indicate a problem with the output. In many cases you can ignore warnings, but sometimes they are an important reminder to go back and edit your code. 
+
+**Messages** are pieces of information that may or may not be useful to you at a particular point in time. Sometimes you will receive messages when you load a package from your library. Sometimes messages will keep you up to date on the progress of a process that is taking a long time to execute.
+
+# Plotting and Graphing
+## Plotting in Base R
+The simplest plot function in base R is **plot()**. This performs basic X-Y plotting. As an example, this code will generate a scatter plot of customer_rate against sales in the salespeople data set. 
+\\Note the use of the arguments **main, xlab and ylab** for customizing the axis labels and title for the plot.
+```{r}
+# scatter plot of customer_rate against sales
+plot(x =  salespeople$sales, y =  salespeople$customer_rate, 
+     xlab = "Sales ($m)", ylab = "Average customer rating", 
+     main = "Scatterplot of Slaes vs Customer rating") 
+```
+**Histograms** of data can be generated using the **hist()**.
+\\Note the use of **breaks** to customize how the bars appear.
+```{r}
+# Convert performance ratings back to numeric data type for histogram
+salespeople$performance <- as.numeric(salespeople$performance) 
+```
+
+```{r}
+hist(salespeople$performance) #histogram of performance ratings
+```
+
+```{r}
+hist(salespeople$performance, xlab = "Performance Ratings", 
+     ylab = "none", main = "Histogram of performance ratings")
+hist(salespeople$performance, breaks = 0:4)
+```
+**Box and whisker plots** are excellent ways to see the distribution of a variable, and can be grouped against another variable to see bivariate patterns. 
+\\Note the use of the **formula** and **data** notation here to define the variable we are interested in and how we want it grouped. We will study this formula notation in greater depth later in this book.
+```{r}
+boxplot(formula = sales ~ performance, data = salespeople,
+        xlab = "Performance Rating", ylab = "Sales ($m)",
+        main = "Boxplot of Sales by Performance Rating") # box plot of sales by performance rating
+```
+
+## Specialist plotting and graphing packages
+**ggplot2** is the most commonly used and allows for flexible construction of a wide range of charts and graphs, though it uses a specific command grammar that may take some getting used to. **Plotly** is an excellent package for interactive graphing, and **GGally** extends ggplot2 to allow easy combination of charts and graphs, which is particularly useful for exploratory data analysis. **GGally's ggpairs()** function produces a pairplot, which is a visualization of all univariate and bivariate patterns in a data set
+```{r, eval=TRUE, warning=FALSE}
+install.packages(
+   "ggplot2",
+   repos = c("http://rstudio.org/_packages",
+   "http://cran.rstudio.com")
+) # convert performance and promotion to categorical
+```
+
+```{r}
+library(GGally)
+```
+
+```{r}
+salespeople$promoted <- as.factor(salespeople$promoted)
+salespeople$performance <- as.factor(salespeople$performance)
+```
+
+## Pairplot of salespeople
+```{r, warning=FALSE}
+GGally::ggpairs(salespeople) # Pairplot of salespeople
+```
+
+
+
