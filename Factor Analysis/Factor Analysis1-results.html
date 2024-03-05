@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html class="ods_d532836a-cc03-414e-9dc2-68f4b343408f" lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8"/>
+<meta content="SAS 9.4" name="generator"/>
+<title>Results: Factor Analysis1.sas</title>
+<style>
+/*<![CDATA[*/
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c section > table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c section > pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c div > table,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c div > pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c article > table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c article > pre,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j section > table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j section > pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j div > table,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j div > pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j article > table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j article > pre,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c p.note, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c p.warning, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c p.error, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c p.fatal,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j p.note, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j p.warning, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j p.error, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j p.fatal,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.c > table.layoutcontainer, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .body.j > table.layoutcontainer { margin-left: auto; margin-right: auto }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.l table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.l pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.l p.note,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.l p.warning, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.l p.error, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.l p.fatal { margin-left: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.c table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.c pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.c p.note,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.c p.warning, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.c p.error, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.c p.fatal { margin-left: auto; margin-right: auto }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r p.note,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r table, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r pre, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r p.note,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r p.warning, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r p.error, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion.r p.fatal { margin-right: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f article, .ods_d532836a-cc03-414e-9dc2-68f4b343408f aside, .ods_d532836a-cc03-414e-9dc2-68f4b343408f details, .ods_d532836a-cc03-414e-9dc2-68f4b343408f figcaption, .ods_d532836a-cc03-414e-9dc2-68f4b343408f figure, .ods_d532836a-cc03-414e-9dc2-68f4b343408f footer, .ods_d532836a-cc03-414e-9dc2-68f4b343408f header, .ods_d532836a-cc03-414e-9dc2-68f4b343408f hgroup, .ods_d532836a-cc03-414e-9dc2-68f4b343408f nav, .ods_d532836a-cc03-414e-9dc2-68f4b343408f section { display: block }
+html.ods_d532836a-cc03-414e-9dc2-68f4b343408f { font-size: 100% }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body { margin: 1em; font-size: 13px; line-height: 1.231 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f sup { position: relative; vertical-align: baseline; bottom: 0.25em; font-size: 0.8em }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f sub { position: relative; vertical-align: baseline; top: 0.25em; font-size: 0.8em }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f ul, .ods_d532836a-cc03-414e-9dc2-68f4b343408f ol { margin: 1em 0; padding: 0 0 0 40px }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f dd { margin: 0 0 0 40px }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f nav ul, .ods_d532836a-cc03-414e-9dc2-68f4b343408f nav ol { list-style: none; list-style-image: none; margin: 0; padding: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f img { border: 0; vertical-align: middle }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f svg:not(:root) { overflow: hidden }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f figure { margin: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f table { border-collapse: collapse; border-spacing: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutcontainer { border-collapse: separate; border-spacing: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f p { margin-top: 0; text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f h1.heading1 { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f h2.heading2 { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f h3.heading3 { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f h4.heading4 { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f h5.heading5 { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f h6.heading6 { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f span { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f table { margin-bottom: 1em }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f td, .ods_d532836a-cc03-414e-9dc2-68f4b343408f th { text-align: left; padding: 3px 6px; vertical-align: top }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f td[class$="fixed"], .ods_d532836a-cc03-414e-9dc2-68f4b343408f th[class$="fixed"] { white-space: pre }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f section, .ods_d532836a-cc03-414e-9dc2-68f4b343408f article { padding-top: 1px; padding-bottom: 8px }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f hr.pagebreak { height: 0px; border: 0; border-bottom: 1px solid #c0c0c0; margin: 1em 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .stacked-value { text-align: left; display: block }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .stacked-cell > .stacked-value, .ods_d532836a-cc03-414e-9dc2-68f4b343408f td.data > td.data, .ods_d532836a-cc03-414e-9dc2-68f4b343408f th.data > td.data, .ods_d532836a-cc03-414e-9dc2-68f4b343408f th.data > th.data, .ods_d532836a-cc03-414e-9dc2-68f4b343408f td.data > th.data, .ods_d532836a-cc03-414e-9dc2-68f4b343408f th.header > th.header { border: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .stacked-cell > div.data { border-width: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer { white-space: nowrap; margin-bottom: 1em }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > p { margin: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > p > span { display: inline-block; width: 100%; white-space: normal }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch { display: table }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .toc { display: none }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .proc_note_group, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .proc_title_group { margin-bottom: 1em }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f p.proctitle { margin: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f p.note, .ods_d532836a-cc03-414e-9dc2-68f4b343408f p.warning, .ods_d532836a-cc03-414e-9dc2-68f4b343408f p.error, .ods_d532836a-cc03-414e-9dc2-68f4b343408f p.fatal { display: table }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .notebanner, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .warnbanner, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .errorbanner, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .fatalbanner,
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .notecontent, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .warncontent, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .errorcontent, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .fatalcontent { display: table-cell; padding: 0.5em }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .notebanner, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .warnbanner, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .errorbanner, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .fatalbanner { padding-right: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body > div > ol li { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .beforecaption > h4 { margin-top: 0; margin-bottom: 0 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .c { text-align: center }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .r { text-align: right }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .l { text-align: left }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .j { text-align: justify }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .d { text-align: right }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .b { vertical-align: bottom }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .m { vertical-align: middle }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .t { vertical-align: top }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .accessiblecaption {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f a:active { color: #800080 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .aftercaption {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+    padding-top: 4pt;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch > colgroup {
+    border-left: 1px solid #c1c1c1;
+    border-right: 1px solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch > tfoot {
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch { border: hidden; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .batch {
+    background-color: #fafbfe;
+    border: 1px solid #c1c1c1;
+    border-collapse: separate;
+    border-spacing: 1px;
+    color: #000000;
+    font-family: 'SAS Monospace', 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    padding: 7px;
+    }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .beforecaption {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .body {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .bodydate {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    text-align: right;
+    vertical-align: top;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .bycontentfolder {
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: none;
+    margin-left: 6pt;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .byline {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > colgroup > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > colgroup, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > * > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer > tfoot { border: none; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .bylinecontainer {
+    background-color: #fafbfe;
+    border: none;
+    border-spacing: 1px;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .caption {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .cell, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .container {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .contentfolder, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .contentitem {
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: none;
+    margin-left: 6pt;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .contentproclabel, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .contentprocname {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .contents {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: decimal;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .contentsdate {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .contenttitle {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .continued {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .data, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .dataemphasis {
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .dataemphasisfixed {
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .dataempty {
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .datafixed {
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .datastrong {
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .datastrongfixed {
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #000000;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .date {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .document {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .errorbanner {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .errorcontent {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .errorcontentfixed {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .extendedpage {
+    background-color: #fafbfe;
+    border-style: solid;
+    border-width: 1pt;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+    text-align: center;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .fatalbanner {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .fatalcontent {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .fatalcontentfixed {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .folderaction {
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: none;
+    margin-left: 6pt;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footer {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footeremphasis {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footeremphasisfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footerempty {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footerfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footerstrong {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .footerstrongfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .frame {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .graph > colgroup {
+    border-left: 1px solid #c1c1c1;
+    border-right: 1px solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .graph > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .graph > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .graph > tfoot {
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .graph { border: hidden; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .graph {
+    background-color: #fafbfe;
+    border: 1px solid #c1c1c1;
+    border-collapse: separate;
+    border-spacing: 1px;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .header {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headeremphasis {
+    background-color: #d8dbd3;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headeremphasisfixed {
+    background-color: #d8dbd3;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #000000;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headerempty {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headerfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headersandfooters {
+    background-color: #edf2f9;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headerstrong {
+    background-color: #d8dbd3;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .headerstrongfixed {
+    background-color: #d8dbd3;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #000000;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .heading1, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .heading2, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .heading3, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .heading4, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .heading5, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .heading6 { font-family: Arial, Helvetica, sans-serif }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .index {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .indexaction, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .indexitem {
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: none;
+    margin-left: 6pt;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .indexprocname {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .indextitle {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutcontainer, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .layoutregion {
+    border-width: 0;
+    border-spacing: 30px;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .linecontent {
+    background-color: #fafbfe;
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f a:link { color: #0000ff }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .list {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: disc;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .list10 {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: square;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .list2 {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: circle;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .list3, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .list4, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .list5, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .list6, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .list7, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .list8, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .list9 {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: square;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: disc;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem10 {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: square;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem2 {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: circle;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem3, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem4, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem5, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem6, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem7, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem8, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .listitem9 {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: square;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .note {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .notebanner {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .notecontent {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .notecontentfixed {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .output > colgroup {
+    border-left: 1px solid #c1c1c1;
+    border-right: 1px solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .output > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .output > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .output > tfoot {
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .output { border: hidden; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .output {
+    background-color: #fafbfe;
+    border: 1px solid #c1c1c1;
+    border-collapse: separate;
+    border-spacing: 1px;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .pageno {
+    background-color: #fafbfe;
+    border-spacing: 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+    text-align: right;
+    vertical-align: top;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .pages {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: decimal;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .pagesdate {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .pagesitem {
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    list-style-type: none;
+    margin-left: 6pt;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .pagesproclabel, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .pagesprocname {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .pagestitle {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .paragraph {
+    background-color: #fafbfe;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > colgroup > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > colgroup, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > * > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip > tfoot { border: none; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .parskip {
+    border: none;
+    border-spacing: 0;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+    }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .prepage {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    text-align: left;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .proctitle {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .proctitlefixed {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooter {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooteremphasis {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooteremphasisfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooterempty {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooterfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooterstrong {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowfooterstrongfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheader {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheaderemphasis {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheaderemphasisfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: italic;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheaderempty {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheaderfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheaderstrong {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .rowheaderstrongfixed {
+    background-color: #edf2f9;
+    border-color: #b0b7bb;
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    color: #112277;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter10, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter2, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter3, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter4, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter5, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter6, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter7, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter8, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemfooter9 {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle10, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle2, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle3, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle4, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle5, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle6, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle7, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle8, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systemtitle9 {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > colgroup > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > colgroup, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > * > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer > tfoot { border: none; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .systitleandfootercontainer {
+    background-color: #fafbfe;
+    border: none;
+    border-spacing: 1px;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .table > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .table > colgroup > col {
+    border-left: 1px solid #c1c1c1;
+    border-right: 0 solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .table > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .table > * > tr {
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 0 solid #c1c1c1;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .table { border: hidden; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .table {
+    border-color: #c1c1c1;
+    border-style: solid;
+    border-width: 1px 0 0 1px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > colgroup > col, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > colgroup, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > * > tr, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > thead, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > tbody, .ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer > tfoot { border: none; }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .titleandnotecontainer {
+    background-color: #fafbfe;
+    border: none;
+    border-spacing: 1px;
+    color: #000000;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+    width: 100%;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .titlesandfooters {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .usertext {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f a:visited { color: #800080 }
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .warnbanner {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: bold;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .warncontent {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: Arial, 'Albany AMT', Helvetica, Helv;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+.ods_d532836a-cc03-414e-9dc2-68f4b343408f .warncontentfixed {
+    background-color: #fafbfe;
+    color: #112277;
+    font-family: 'Courier New', Courier;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: normal;
+}
+/*]]>*/
+</style>
+</head>
+<body class="body">
+<div id="div_d532836a-cc03-414e-9dc2-68f4b343408f" class="c body">
+<h1 class="body toc">Results: Factor Analysis1.sas</h1>
+<section data-name="Print" data-sec-type="proc">
+<div id="IDX" class="systitleandfootercontainer" style="border-spacing: 1px">
+<p><span class="c systemtitle">Percentage of Metal Elements in Different Concentration</span> </p>
+</div>
+<h1 class="contentprocname toc">The Print Procedure</h1>
+<article aria-label="Data Set WORK.ELEMENTS">
+<h1 class="contentitem toc">Data Set WORK.ELEMENTS</h1>
+<table class="table" style="border-spacing: 0" aria-label="Data Set WORK.ELEMENTS">
+<caption aria-label="Data Set WORK.ELEMENTS"></caption>
+<colgroup><col/></colgroup><colgroup><col/><col/><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="r header" scope="col">Obs</th>
+<th class="header" scope="col">METAL_ELEMENTS</th>
+<th class="r header" scope="col">Five_grams_liter</th>
+<th class="r header" scope="col">Ten_grams_liter</th>
+<th class="r header" scope="col">Twenty_grams_liter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="r rowheader" scope="row">1</th>
+<td class="data">Cu</td>
+<td class="r data">86</td>
+<td class="r data">90</td>
+<td class="r data">95</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">2</th>
+<td class="data">Mn</td>
+<td class="r data">42</td>
+<td class="r data">31</td>
+<td class="r data">10</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">3</th>
+<td class="data">Ni</td>
+<td class="r data" style="white-space: nowrap">-20</td>
+<td class="r data">47</td>
+<td class="r data">33</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">4</th>
+<td class="data">Zn</td>
+<td class="r data">69</td>
+<td class="r data">78</td>
+<td class="r data">31</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">5</th>
+<td class="data">Fe</td>
+<td class="r data" style="white-space: nowrap">-22</td>
+<td class="r data" style="white-space: nowrap">-86</td>
+<td class="r data" style="white-space: nowrap">-124</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">6</th>
+<td class="data">Al</td>
+<td class="r data" style="white-space: nowrap">-188</td>
+<td class="r data">87</td>
+<td class="r data">85</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">7</th>
+<td class="data">Mg</td>
+<td class="r data" style="white-space: nowrap">-12</td>
+<td class="r data">58</td>
+<td class="r data">28</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">8</th>
+<td class="data">Ca</td>
+<td class="r data" style="white-space: nowrap">-27</td>
+<td class="r data">56</td>
+<td class="r data">30</td>
+</tr>
+</tbody>
+</table>
+</article>
+</section>
+<section data-name="Factor" data-sec-type="proc">
+<hr class="pagebreak"/>
+<div id="IDX1" class="systitleandfootercontainer" style="border-spacing: 1px">
+<p><span class="c systemtitle">Percentage of Metal Elements in Different Concentration</span> </p>
+</div>
+<div class="proc_title_group">
+<p class="c proctitle">The FACTOR Procedure</p>
+</div>
+<h1 class="contentprocname toc">The Factor Procedure</h1>
+<article aria-label="N of Observations">
+<h1 class="contentitem toc">N of Observations</h1>
+<table class="table" style="border-spacing: 0" aria-label="Number of Observations">
+<caption aria-label="Number of Observations"></caption>
+<colgroup><col/><col/></colgroup>
+<tbody>
+<tr>
+<th class="rowheader" scope="row">Input Data Type</th>
+<td class="r data">Raw Data</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">Number of Records Read</th>
+<td class="r data">8</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">Number of Records Used</th>
+<td class="r data">8</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">N for Significance Tests</th>
+<td class="r data">8</td>
+</tr>
+</tbody>
+</table>
+</article>
+<hr class="pagebreak"/>
+<div id="IDX2" class="systitleandfootercontainer" style="border-spacing: 1px">
+<p><span class="c systemtitle">Percentage of Metal Elements in Different Concentration</span> </p>
+</div>
+<div class="proc_title_group">
+<p class="c proctitle">The FACTOR Procedure</p>
+<p class="c proctitle">Initial Factor Method: Principal Factors</p>
+</div>
+<section>
+<h1 class="contentfolder toc">Initial Factor Solution</h1>
+<article aria-label="Prior Communalities">
+<h1 class="contentitem toc">Prior Communalities</h1>
+<table class="table" style="border-spacing: 0" aria-label="Prior Communality Estimates">
+<caption aria-label="Prior Communality Estimates"></caption>
+<colgroup><col/><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="3" scope="colgroup">Prior Communality Estimates: SMC</th>
+</tr>
+<tr>
+<th class="r b header" scope="col">Five_grams_liter</th>
+<th class="r b header" scope="col">Ten_grams_liter</th>
+<th class="r b header" scope="col">Twenty_grams_liter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r data">0.08529179</td>
+<td class="r data">0.94953124</td>
+<td class="r data">0.94975551</td>
+</tr>
+</tbody>
+</table>
+</article>
+<article id="IDX3" aria-label="Eigenvalues">
+<h1 class="contentitem toc">Eigenvalues</h1>
+<table class="table" style="border-spacing: 0" aria-label="Eigenvalues">
+<caption aria-label="Eigenvalues"></caption>
+<colgroup><col/><col/><col/><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="5" scope="colgroup">Eigenvalues of the Reduced Correlation Matrix: Total = 1.98457854  Average = 0.66152618</th>
+</tr>
+<tr>
+<th class="c headerempty" scope="col">&#160;</th>
+<th class="r b header" scope="col">Eigenvalue</th>
+<th class="r b header" scope="col">Difference</th>
+<th class="r b header" scope="col">Proportion</th>
+<th class="r b header" scope="col">Cumulative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="r rowheader" scope="row">1</th>
+<td class="r data">1.92293686</td>
+<td class="r data">1.82008976</td>
+<td class="r data">0.9689</td>
+<td class="r data">0.9689</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">2</th>
+<td class="r data">0.10284710</td>
+<td class="r data">0.14405253</td>
+<td class="r data">0.0518</td>
+<td class="r data">1.0208</td>
+</tr>
+<tr>
+<th class="r rowheader" scope="row">3</th>
+<td class="r data" style="white-space: nowrap">-.04120543</td>
+<td class="r data">&#160;</td>
+<td class="r data" style="white-space: nowrap">-0.0208</td>
+<td class="r data">1.0000</td>
+</tr>
+</tbody>
+</table>
+</article>
+<div class="proc_note_group">
+<p class="c proctitle">2 factors will be retained by the MINEIGEN criterion.</p>
+</div>
+<article id="IDX4" aria-label="Scree Plot">
+<h1 class="contentitem toc">Scree Plot</h1>
+<pre class="batch" style="border-spacing: 1px">
+Scree Plot of Eigenvalues                                                                                                           
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+   2.0 +                                                                                                                            
+       |                                                                                                                            
+       |                                             1                                                                              
+       |                                                                                                                            
+   1.8 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+   1.6 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+   1.4 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+   1.2 +                                                                                                                            
+E      |                                                                                                                            
+i      |                                                                                                                            
+g      |                                                                                                                            
+e  1.0 +                                                                                                                            
+n      |                                                                                                                            
+v      |                                                                                                                            
+a      |                                                                                                                            
+l  0.8 +                                                                                                                            
+u      |                                                                                                                            
+e      |                                                                                                                            
+s      |                                                                                                                            
+   0.6 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+   0.4 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+   0.2 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                             2                                              
+       |                                                                                                                            
+   0.0 +                                                                                                                            
+       |                                                                                                             3              
+       |                                                                                                                            
+       |                                                                                                                            
+  -0.2 +                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       |                                                                                                                            
+       --------------+-------------------------------+-------------------------------+-------------------------------+--------------
+                     0                               1                               2                               3              
+                                                                                                                                    
+                                                                   Number                                                           
+</pre>
+</article>
+<article id="IDX5" aria-label="Factor Pattern">
+<h1 class="contentitem toc">Factor Pattern</h1>
+<table class="table" style="border-spacing: 0" aria-label="Factor Pattern">
+<caption aria-label="Factor Pattern"></caption>
+<colgroup><col/><col/></colgroup><colgroup><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="4" scope="colgroup">Factor&#160;Pattern</th>
+</tr>
+<tr>
+<th class="c headerempty" colspan="2" scope="colgroup">&#160;</th>
+<th class="r b header" scope="col">Factor1</th>
+<th class="r b header" scope="col">Factor2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="rowheader" scope="row">Five_grams_liter</th>
+<th class="data">Metal Elements in Five_grams/liter Concentration (Percent)</th>
+<td class="r data" style="white-space: nowrap">-0.03463</td>
+<td class="r data">0.29906</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">Ten_grams_liter</th>
+<th class="data">Metal Elements in Ten_grams/liter Concentration (Percent)</th>
+<td class="r data">0.97957</td>
+<td class="r data">0.08704</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">Twenty_grams_liter</th>
+<th class="data">Metal Elements in Twenty_grams/liter Concentration (Percent)</th>
+<td class="r data">0.98091</td>
+<td class="r data" style="white-space: nowrap">-0.07637</td>
+</tr>
+</tbody>
+</table>
+</article>
+<article id="IDX6" aria-label="Variance Explained">
+<h1 class="contentitem toc">Variance Explained</h1>
+<table class="table" style="border-spacing: 0" aria-label="Variance Explained">
+<caption aria-label="Variance Explained"></caption>
+<colgroup><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="2" scope="colgroup">Variance Explained by Each Factor</th>
+</tr>
+<tr>
+<th class="r b header" scope="col">Factor1</th>
+<th class="r b header" scope="col">Factor2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r data">1.9229369</td>
+<td class="r data">0.1028471</td>
+</tr>
+</tbody>
+</table>
+</article>
+<article id="IDX7" aria-label="Final Communalities">
+<h1 class="contentitem toc">Final Communalities</h1>
+<table class="table" style="border-spacing: 0" aria-label="Final Communality Estimates">
+<caption aria-label="Final Communality Estimates"></caption>
+<colgroup><col/><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="3" scope="colgroup">Final Communality Estimates: Total = 2.025784</th>
+</tr>
+<tr>
+<th class="r b header" scope="col">Five_grams_liter</th>
+<th class="r b header" scope="col">Ten_grams_liter</th>
+<th class="r b header" scope="col">Twenty_grams_liter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r data">0.09063809</td>
+<td class="r data">0.96713930</td>
+<td class="r data">0.96800658</td>
+</tr>
+</tbody>
+</table>
+</article>
+</section>
+<hr class="pagebreak"/>
+<div id="IDX8" class="systitleandfootercontainer" style="border-spacing: 1px">
+<p><span class="c systemtitle">Percentage of Metal Elements in Different Concentration</span> </p>
+</div>
+<div class="proc_title_group">
+<p class="c proctitle">The FACTOR Procedure</p>
+<p class="c proctitle">Rotation Method: Varimax</p>
+</div>
+<section>
+<h1 class="contentfolder toc">Rotated Factor Solution</h1>
+<article aria-label="Orthogonal Transformation">
+<h1 class="contentitem toc">Orthogonal Transformation</h1>
+<table class="table" style="border-spacing: 0" aria-label="Orthogonal Transformation Matrix">
+<caption aria-label="Orthogonal Transformation Matrix"></caption>
+<colgroup><col/></colgroup><colgroup><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="3" scope="colgroup">Orthogonal Transformation Matrix</th>
+</tr>
+<tr>
+<th class="c headerempty" scope="col">&#160;</th>
+<th class="r b header" scope="col">1</th>
+<th class="r b header" scope="col">2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="rowheader" scope="row">1</th>
+<td class="r data">0.99808</td>
+<td class="r data" style="white-space: nowrap">-0.06190</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">2</th>
+<td class="r data">0.06190</td>
+<td class="r data">0.99808</td>
+</tr>
+</tbody>
+</table>
+</article>
+<article id="IDX9" aria-label="Factor Pattern">
+<h1 class="contentitem toc">Factor Pattern</h1>
+<table class="table" style="border-spacing: 0" aria-label="Rotated Factor Pattern">
+<caption aria-label="Rotated Factor Pattern"></caption>
+<colgroup><col/><col/></colgroup><colgroup><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="4" scope="colgroup">Rotated&#160;Factor&#160;Pattern</th>
+</tr>
+<tr>
+<th class="c headerempty" colspan="2" scope="colgroup">&#160;</th>
+<th class="r b header" scope="col">Factor1</th>
+<th class="r b header" scope="col">Factor2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="rowheader" scope="row">Five_grams_liter</th>
+<th class="data">Metal Elements in Five_grams/liter Concentration (Percent)</th>
+<td class="r data" style="white-space: nowrap">-0.01605</td>
+<td class="r data">0.30063</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">Ten_grams_liter</th>
+<th class="data">Metal Elements in Ten_grams/liter Concentration (Percent)</th>
+<td class="r data">0.98308</td>
+<td class="r data">0.02624</td>
+</tr>
+<tr>
+<th class="rowheader" scope="row">Twenty_grams_liter</th>
+<th class="data">Metal Elements in Twenty_grams/liter Concentration (Percent)</th>
+<td class="r data">0.97430</td>
+<td class="r data" style="white-space: nowrap">-0.13694</td>
+</tr>
+</tbody>
+</table>
+</article>
+<article id="IDX10" aria-label="Variance Explained">
+<h1 class="contentitem toc">Variance Explained</h1>
+<table class="table" style="border-spacing: 0" aria-label="Variance Explained">
+<caption aria-label="Variance Explained"></caption>
+<colgroup><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="2" scope="colgroup">Variance Explained by Each Factor</th>
+</tr>
+<tr>
+<th class="r b header" scope="col">Factor1</th>
+<th class="r b header" scope="col">Factor2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r data">1.9159633</td>
+<td class="r data">0.1098206</td>
+</tr>
+</tbody>
+</table>
+</article>
+<article id="IDX11" aria-label="Final Communalities">
+<h1 class="contentitem toc">Final Communalities</h1>
+<table class="table" style="border-spacing: 0" aria-label="Final Communality Estimates">
+<caption aria-label="Final Communality Estimates"></caption>
+<colgroup><col/><col/><col/></colgroup>
+<thead>
+<tr>
+<th class="c b header" colspan="3" scope="colgroup">Final Communality Estimates: Total = 2.025784</th>
+</tr>
+<tr>
+<th class="r b header" scope="col">Five_grams_liter</th>
+<th class="r b header" scope="col">Ten_grams_liter</th>
+<th class="r b header" scope="col">Twenty_grams_liter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="r data">0.09063809</td>
+<td class="r data">0.96713930</td>
+<td class="r data">0.96800658</td>
+</tr>
+</tbody>
+</table>
+</article>
+</section>
+</section>
+</div>
+</body>
+</html>
