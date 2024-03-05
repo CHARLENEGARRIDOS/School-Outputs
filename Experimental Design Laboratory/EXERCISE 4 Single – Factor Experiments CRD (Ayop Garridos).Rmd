@@ -1,0 +1,157 @@
+---
+title: "EXERCISE 4 Single – Factor Experiments: CRD"
+author: "Kyla Ayop and Charlene Garridos"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_section: true
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+# R Library
+```{r}
+library(tidyverse)
+library(agricolae)
+library(car)
+```
+
+# Problem 
+
+The tensile strength of Portland cement is being studied. Four different mixing techniques can be used economically. The following data have been collected.
+
+|MIXING |TECHNIQUE TENSILE STRENGTH (LB/IN2)|
+|:-----:|:---------------:|:---------------:|
+|1    	| 3129     3000      2865	    2890  |
+|2    	| 3200	   3300      2975	    3150  |
+|3    	| 2800	   2900      2985	    3050  |
+|4    	| 2600	   2700      2600	    2765  |
+
+## Data
+```{r}
+# Dataset
+mixing_technique <- rep(c(1, 2, 3, 4), each = 4)
+tensile_strength <- c(3129, 3000, 2865, 2890, 3200, 3300, 2975, 3150, 
+                      2800, 2900, 2985, 3050, 2600, 2700, 2600, 2765)
+
+# Convert to factor
+mixing_technique = as.factor(mixing_technique)
+
+# Data Frame
+Portland_cement <- data.frame(mixing_technique, tensile_strength)
+
+# Class attribute of the object 
+class(Portland_cement$mixing_technique)
+# Level attributes of a variable
+levels(Portland_cement$mixing_technique)
+
+# Display data
+Portland_cement
+```
+```{r}
+View(Portland_cement)
+```
+
+```{r}
+# str() function help inspect the structure and levels of the dataset
+str(Portland_cement)
+```
+### Data Summary
+```{r}
+# summary
+desc.data <- Portland_cement %>%
+  group_by(mixing_technique) %>%
+  summarize(
+    total = sum(tensile_strength),
+    mean = mean(tensile_strength),
+    standard_deviation=sd(tensile_strength),
+    no_of_replicates=n(),
+)
+
+desc.data
+```
+
+# Analysis
+## ANOVA
+```{r}
+anova = aov(tensile_strength~mixing_technique, data=Portland_cement)
+summary(anova)
+```
+**Hypothesis and Test Statistic:**
+
+> $H_O$: There is no significant difference in the mean tensile strength of Portland cement among the four mixing techniques that are used economically.
+$$[ \mu_1 = \mu_2 = \mu_3 = \mu_4]$$
+
+> $H_a$: At least one mixing technique gave a different mean tensile strength of Portland cement among the four mixing techniques that are used economically.
+$$[ \mu_i \neq \mu_j , i \neq j ]$$
+
+> Test statistic: One-way analysis of Variance at $\alpha = 0.05$.
+
+**Decision Rule:** Reject $H_o$ at $\alpha = 0.05$ if $F_c > F_t = F_{3,12} (0.05) = 3.49$. Otherwise fail to reject $H_o$.
+
+**Decision:** Since $F_c = 12.73 > F_t = 3.49$, then we reject $H_o$.
+
+The results shows that the computed F-value is 12.73 and the p-value of 0.000489. This implies that a smaller p-value indicates stronger evidence against the null hypothesis.
+
+**Conclusion:** Since $F_c = 12.73 > F_t =3.49$, and $p-value = 0.000489 < \alpha = 0.05$, then we reject $H_o$. Thus, we have enough evidence to reject the null hypothesis at 5% level of significance.  Therefore, there is sufficient evidence to conclude that at least one mixing technique yields a different mean tensile strength of Portland cement compared to the others among the four mixing techniques used economically.
+
+## Normality Assumption
+### QQ plot
+```{r,fig.cap="\\label{fig:01} The Normal Q-Q Plot of Residuals"}
+plot(anova,which=2) 
+```
+
+**Interpretation**
+
+**Hypotheses:**
+
+> $H_o: X_i's$ comes from a normal distribution.
+
+> $H_a: X_i's$ do not come from a normal distribution.
+
+The residuals plotted in Figure \ref{fig:01}: the normal probability plot do not fall along a straight line, which suggests that the normality assumption is not valid. A data transformation is recommended.
+
+## Homogeneity of variances
+### Residual vs Fitted Plot
+```{r,fig.cap="\\label{fig:02} The Residual Vs Fitted Values"}
+plot(anova,which=1)
+```
+
+**Interpretation**
+
+The figure \ref{fig:02}: residuals-versus-predicted seems funnel-shaped. This demonstrates that the variance of the initial observations is not constant. The residuals depicted in the normal probability plot do not form a straight line, implying that the normality assumption is invalid. A data transformation is recommended, such as $\sqrt{Y}$ correction.
+
+## Visualization
+```{r,  fig.cap="\\label{fig:03}The Effect of Mixing Technique on Tesile Strength"}
+#visual inspection using box plot
+box_plot=ggplot(Portland_cement, aes(x = mixing_technique, y = tensile_strength)) +
+  geom_boxplot(aes(fill = mixing_technique), fill="turquoise",show.legend = FALSE) +
+  stat_summary(fun="mean", geom="point", shape=15, size=1, color="red")+ theme_classic()
+box_plot + xlab("Mixing Technique") + ylab("Tensile Strength")
+```
+
+**Interpretation**
+
+In Figure \ref{fig:03}, the distribution of mean tensile strength values for Portland cement is depicted across four mixing techniques. Each box represents the distribution of tensile strength values for a specific mixing technique, with red points indicating the mean tensile strength for each group. Mixing techniques 1 and 4 appear right-skewed, while mixing techniques 2 and 3 are left-skewed. The plot also highlights the differences between mixing techniques: 2 and 1, 2 and 3, 2 and 4, 1 and 4, and 3 and 4. Additionally, upon closer examination, no significant difference between mixing techniques 1 and 3.
+
+## Multiple Comparison Test
+```{r}
+lsd=LSD.test(anova, "mixing_technique", alpha = 0.05)
+lsd
+```
+
+```{r,  fig.cap="\\label{fig:04}The Fisher's Least Significant Difference (LSD) test Of The Effect of Mixing Technique on Tesile Strength"}
+plot(lsd)
+```
+
+**Interpretation**
+
+Fisher's Least Significant Difference (LSD) test, conducted at an alpha level of 0.05, was employed to analyze the significant differences between mixing techniques as depicted in Figure \ref{fig:04}. The results indicate that mixing techniques 2(a) and 1(b), 2(a) and 3(b), 2(a) and 4(c), 1(b) and 4(c), and 3(b) and 4(c) exhibit statistically significant differences in mean tensile strength of Portland cement. However, there is no significant difference observed between mixing techniques 1(b) and 3(b).  Therefore, there is at least one mixing technique yields a different mean tensile strength of Portland cement compared to the others  among the four economically utilized mixing techniques.
+
