@@ -1,0 +1,213 @@
+---
+title: "Descriptive Exercises"
+author: "Garridos, Charlene P."
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\vspace{2in}
+
+# Exercise 1: Analyzing Survey Data
+
+## Problem
+A survey in which respondents were questioned about their preferred musical genres. The dataset `music_survey` has the following columns: 
+
+- `Respondent_ID`: Unique identifier for each respondent.
+- `Age`: Respondent's age.
+- `Gender`: Gender of the respondent (e.g., "Male," "Female," "Non-binary," "Prefer not to say").
+- `Favorite_Music_Genre`: Favorite music genre of the respondent (e.g., "Rock," "Pop," "Hip-hop," "Jazz").
+
+## Dataset
+```{r}
+# Read the CSV file
+music_survey <- read.csv("music_survey.csv")
+
+# View the data
+head(music_survey)
+```
+
+## Frequency and Relative Frequency
+```{r}
+Favorite_Music_Genre <- music_survey$Favorite_Music_Genre
+
+# table() function to calculate frequencies
+freq <- table(Favorite_Music_Genre)
+
+# prop.table() function to calculate relative frequencies
+relative_freq <- prop.table(freq)
+
+# A data frame for the tables
+result <- data.frame(Favorite_Music_Genre = names(freq), Frequency = as.vector(freq), 
+                     Relative_Frequency = as.vector(relative_freq))
+
+result
+```
+## Questions with Answers
+
+1. What is the most common favorite music genre among the survey respondents in terms of frequency?
+
+> The most common favorite music genre is pop music. 113 respondents out of 400 love listening to pop music.
+
+2. What is the most common favorite music genre among the survey respondents in terms of relative frequency?
+
+> Pop music is the most popular genre among listeners. 28% of people enjoy listening to pop music.
+
+3. Are there any noticeable gender or age-related patterns in the data?
+
+> No, there are no noticeable gender- or age-related patterns in the data since, based on the instructions, we only analyze the distribution of favorite music genres among the survey respondents.
+
+# Exercise 2: Finding the Mode of Test Scores
+## Problem
+Suppose you are a teacher, and you have collected test scores from a class of 30 students. The test scores range from 0 to 100, and you want to find the mode (most common score) to understand which score appears most frequently among your students.
+
+## Dataset
+```{r}
+# Create dataset
+test_scores <- c(85, 92, 78, 95, 85, 90, 78, 92, 88, 75,
+                 92, 85, 88, 90, 75, 78, 95, 92, 85, 75,
+                 88, 92, 75, 85, 90, 78, 88, 75, 85, 92)
+```
+## Mode and Frequency
+```{r}
+# Use the table() function to calculate frequencies
+scores_freq <- table(test_scores)
+scores_freq
+
+# Calculate the mode (most frequent test score) from the given dataset.
+scores_mode <- names(scores_freq[scores_freq == max(scores_freq)])
+scores_mode
+```
+Determine how many times the mode score appears in the dataset
+```{r}
+# Count how many times the mode appears
+mode_count <- sum(scores_freq[scores_freq == max(scores_freq)])
+
+# Displays  how many times the mode score appears in the dataset
+cat("The number of times the mode appears for both \"85\" and \"92\" is", mode_count, "\n")
+```
+Display the mode score and its frequency.
+```{r}
+# Display the mode score and its frequency.
+cat("The mode of the test scores is bimodal:", scores_mode, "and the frequency is:", 
+    scores_freq, "\n")
+```
+
+# Exercise 3: Employee Preferences
+## Problem
+Suppose you have surveyed 200 employees in a company to understand their preferences for different office locations based on their departments and job roles.
+
+You collected the following data:
+
+- Department (HR, IT, Sales, Marketing)
+- Job Role (Manager, Analyst, Assistant)
+- Preferred Office Location (Downtown, Suburb, Remote)
+
+Here's a summary of the data:
+
+- Among HR employees:
+
+  > 30 are Managers (10 prefer Downtown, 10 prefer Suburb, 10 prefer Remote)
+  
+  > 60 are Analysts (20 prefer Downtown, 20 prefer Suburb, 20 prefer Remote)
+  
+  > 40 are Assistants (15 prefer Downtown, 10 prefer Suburb, 15 prefer Remote)
+  
+- Among IT employees:
+
+  > 25 are Managers (8 prefer Downtown, 10 prefer Suburb, 7 prefer Remote)
+  
+  > 50 are Analysts (15 prefer Downtown, 20 prefer Suburb, 15 prefer Remote)
+  
+  > 35 are Assistants (10 prefer Downtown, 10 prefer Suburb, 15 prefer Remote)
+  
+- Among Sales employees:
+
+  > 20 are Managers (5 prefer Downtown, 10 prefer Suburb, 5 prefer Remote)
+  
+  > 40 are Analysts (15 prefer Downtown, 10 prefer Suburb, 15 prefer Remote)
+  
+  > 30 are Assistants (10 prefer Downtown, 5 prefer Suburb, 15 prefer Remote)
+  
+- Among Marketing employees:
+
+  > 15 are Managers (5 prefer Downtown, 5 prefer Suburb, 5 prefer Remote)
+  
+  > 30 are Analysts (10 prefer Downtown, 10 prefer Suburb, 10 prefer Remote)
+  
+  > 20 are Assistants (8 prefer Downtown, 5 prefer Suburb, 7 prefer Remote)
+  
+## Dataset
+```{r}
+Employees <- data.frame(
+  Department = rep(c("HR", "IT", "Sales", "Marketing"), each = 9),
+  Job_Role = rep(c("Manager", "Analyst", "Assistant"), times = 4),
+  Pref.Office_Location = rep(c("Downtown", "Suburb", "Remote"), each = 3),
+  Count = c(10, 20, 15, 10, 20, 10, 10, 20, 15,
+            8, 15, 10, 10, 20, 10, 7, 15, 15, 
+            5, 15, 10, 10, 10, 5, 5, 15, 15,
+            5, 10, 8, 5, 10, 5, 5, 10, 7)
+)
+Employees
+```
+
+
+## Contingency Table
+```{r}
+# Create a contingency table using xtabs
+contingency_table <- xtabs(Count ~ Employees$Department + Employees$Job_Role 
+                           + Employees$Pref.Office_Location, data = Employees)
+contingency_table
+```
+\vspace{1in}
+
+## Proportional Table
+Calculate the column-wise proportional table to understand the distribution of Preferred Office Location by Department and Job Role.
+```{r}
+# Calculate the proportional table
+proportional_table1 <- prop.table(xtabs(Count ~ Employees$Department + Employees$Job_Role
+                           + Employees$Pref.Office_Location, data = Employees), 
+                           margin = 2) * 100  # Margin = 2 for column-wise percentages
+
+# Display the proportional table
+proportional_table1
+```
+
+Calculate the cell-wise proportional table to express the proportion of each Preferred Office Location within each cell (Department and Job Role).
+```{r}
+# Calculate the proportional table 
+proportional_table2 <- prop.table(xtabs(Count ~ Employees$Department + Employees$Job_Role
+                           + Employees$Pref.Office_Location, data = Employees), 
+                           margin = c(1,2)) * 100  # Margin = c(1,2) for cell-wise percentages
+
+# Display the proportional table
+proportional_table2
+```
+
+Calculate the row-wise proportional table to see the distribution of Preferred Office Location within each Department and Job Role, expressed as percentages.
+```{r}
+# Calculate the proportional table 
+proportional_table3 <- prop.table(xtabs(Count ~ Employees$Department + Employees$Job_Role
+                           + Employees$Pref.Office_Location, data = Employees), 
+                           margin = 1) * 100  # Margin = 1 for row-wise percentages
+
+# Display the proportional table
+proportional_table3
+```
+## Questions with Answers
+1. Which Department and Job Role combination has the highest percentage of employees preferring Downtown as their office location?
+
+> The Department and Job Role combination that has the highest percentage of employees preferring Downtown as their office location is in the Sales department, where Analysts have the highest percentage with 16.67%.
+
+2. What percentage of HR Managers prefer Remote as their office location?
+
+> The percentage of HR Managers preferring Remote as their office location is 7.69%.
+
+
+

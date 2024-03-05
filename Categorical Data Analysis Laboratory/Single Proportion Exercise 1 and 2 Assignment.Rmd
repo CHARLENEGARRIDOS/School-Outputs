@@ -1,0 +1,504 @@
+---
+title: "Single Proportion: Exercise 1 and 2 Assignment"
+author: "Garridos, Charlene P."
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 4
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+# R Library
+```{r}
+library(ggplot2)
+library(forcats)
+```
+
+# Exercise 1
+
+## Problem
+
+A local school board claims that at least 75% of the parents in the district are in favor of extending the school day by 30 minutes to incorporate additional physical education time. A group of parents skeptical of this claim decides to conduct a survey. They randomly select 120 parents from the district, and 81 express support for extending the school day.
+
+Tasks:
+
+1. Compute the 99% CI using
+
+> a. Score statistics
+> b. Wald statistics
+> c. Compare the two intervals
+
+2. Test the claim using
+
+> a. Wald
+> b. Score
+> c. Likelihood Ratio
+
+```{r}
+# Given Data
+n <- 120
+p.sample <- 0.675
+pi.null <- 0.75
+```
+
+## Computation of 99% CI (Score and Wald Statistics)
+
+### Score Statistics
+
+Since the confidence interval is 99%, the $\alpha$ = 0.01
+```{r}
+# let's create a function that compute the score z statistics
+# score confidence interval, and test the H0:pi=pi.0
+score.test.prop <- function(n,p,pi.0=0.75,alpha=0.01,confidence=T, 
+                      alternative = c("lesser","greater", "not equal")){
+  
+  # compute statistic
+  dif <- p-pi.0
+  se = sqrt(pi.0*(1-pi.0)/n)
+  test.stat <- (dif)/(se)
+  
+  # compute confidence interval
+  if(confidence){
+    z_ <- abs(qnorm(alpha/2))
+    lower.limit <- max(c(0,p - (z_*se)))
+    upper.limit <- min(c(p + (z_*se),1))
+    confidence.interval <- c(lower.limit,upper.limit)
+    names(confidence.interval) <- c("lower limit", "upper limit")
+  }
+  
+  # test HO
+  if(alternative =="not equal"){
+    p.value <- (1- pnorm(abs(test.stat)))*2
+  }
+  else if(alternative =="lesser"){
+    p.value <- pnorm(test.stat)
+  }
+  else if(alternative =="greater"){
+    p.value <- pnorm(abs(test.stat))
+  }
+  else{
+    stop("Specify the correct alternative!")
+  }
+  
+  decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  
+  cat("Testing Population Proportion Using Score Test\n\n")
+  cat("Ho:The population proportion is greater than or equal to", pi.0,"\n")
+  cat("Score Test Statistic:", test.stat,"\t","p-value:",p.value,"\n")
+  cat((1-alpha)*100,"CI:",confidence.interval,"\n" )
+  cat("Decision:", decision)
+  
+  return(list("Score" = test.stat,"p.value"=p.value,
+              "CI"=confidence.interval, "decision"=decision))
+}
+```
+
+### Wald Statistics
+```{r}
+# let's create a function that compute the wald z statistics
+# wald confidence interval, and test the H0:pi=pi.0
+wald.test.prop <- function(n,p,pi.0=0.75,alpha=0.01,confidence=T, 
+                      alternative = c("lesser","greater", "not equal")){
+  
+  # compute statistic
+  dif <- p-pi.0
+  se = sqrt(p*(1-p)/n)
+  test.stat <- (dif)/(se)
+  
+  # compute confidence interval
+  if(confidence){
+    z_ <- abs(qnorm(alpha/2))
+    lower.limit <- max(c(0,p - (z_*se)))
+    upper.limit <- min(c(p + (z_*se),1))
+    confidence.interval <- c(lower.limit,upper.limit)
+    names(confidence.interval) <- c("lower limit", "upper limit")
+  }
+  
+  # test HO
+  if(alternative =="not equal"){
+    p.value <- (1- pnorm(abs(test.stat)))*2
+  }
+  else if(alternative =="lesser"){
+    p.value <- pnorm(test.stat)
+  }
+  else if(alternative =="greater"){
+    p.value <- pnorm(abs(test.stat))
+  }
+  else{
+    stop("Specify the correct alternative!")
+  }
+  
+  decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  
+  cat("Testing Population Proportion Using Wald Test\n\n")
+  cat("Ho:The population proportion is greater than or equal to to", pi.0,"\n")
+  cat("Wald Test Statistic:", test.stat,"\t","p-value:",p.value,"\n")
+  cat((1-alpha)*100,"CI:",confidence.interval,"\n" )
+  cat("Decision:", decision)
+  
+  return(list("Wald.stat" = test.stat,"p.value"=p.value,
+              "CI"=confidence.interval, "decision"=decision))
+}
+```
+
+### Comparison of Two Intervals
+```{r}
+wald.res <- wald.test.prop(n=n,p=p.sample,pi.0 = pi.null, alternative = "not equal")
+
+score.res <- score.test.prop(n=n,p=p.sample,
+                             pi.0 = 0.75, alternative = "not equal")
+```
+
+**Discussion** 
+
+The confidence interval of Wald Test is 
+$$ CI_\text{Wald}: (0.5648664,  0.7851336)$$
+The confidence interval of Score Test is 
+$$ CI_\text{Score}: ( 0.5731814, 0.7768186)$$
+The intervals are quite close in terms of their lower and upper bounds. The difference between the lower bound and upper bound for both the Wald Test and Score Test is 0.2202672 and 0.2036372, respectively. Hence, both intervals cover a similar range of values for the population proportion and are narrow. If an interval is narrow, it gives a more precise estimate. In other words, the margin of error is smaller. Therefore, the slight difference between the lower and upper bounds of both intervals indicates reduced uncertainty in the estimation.
+
+Moreover, the hypothesized value of 0.75 falls within both confidence intervals. This indicates that there is no significant difference between the hypothesized value and the estimated population proportion, as both intervals include the value of 0.75. Thus, there is no evidence to refute the claim made by the local school board that at least 75% of the parents in the district are in favor of extending the school day by 30 minutes to incorporate additional physical education time.
+
+## Test the Claim
+### Wald Test
+```{r}
+wald.res <- wald.test.prop(n=n,p=p.sample,pi.0 = pi.null, alternative = "not equal")
+```
+**Discussion**
+
+The results show that the Wald Test Statistic is -1.754116, with a corresponding p-value of 0.07941063. This indicates that there's approximately a 7.94% chance of observing a test statistic as extreme as -1.754116, assuming that the true population proportion is indeed 0.75.
+
+Since the p-value = 0.07941063 is greater than the level of significance of 0.01, we fail to reject the null hypothesis. Thus, there is no enough evidence to reject the null hypothesis. Therefore, at least 75% of the parents in the district are in favor of extending the school day by 30 minutes to incorporate additional physical education time.
+
+### Score Test
+```{r}
+score.res <- score.test.prop(n=n,p=p.sample,
+                             pi.0 = 0.75, alternative = "not equal")
+```
+**Discussion**
+
+The Score Test Statistics is -1.897367 and the p-value is 0.05777957. The p-value suggests that there's about a 5.78% chance of observing a test statistic as extreme as -1.897367, given that the true population proportion is indeed 0.75.
+
+We cannot reject the null hypothesis since the p-value of 0.05777957 is greater than the level of significance of 0.01. Thus, there is insufficient evidence to reject the null hypothesis. In conclusion, at least 75% of the district's parents support extending the school day by 30 minutes to provide for more physical education time.
+
+### Likelihood Ratio
+```{r}
+# let's create a function that compute the Likelihood H0:pi=pi.0
+LR.test.prop <- function(n,p,x=NULL,pi.0=0.75,alpha=0.01, 
+                      alternative = c("lesser","greater", "not equal")){
+  
+  if(is.null(x)){
+    x <- round(n*p,0)
+  }
+
+  
+  # compute statistic
+  likelihood.0 <- ((pi.0)^(x))*((1-pi.0)^(n-x))
+  likelihood.1 <- ((p)^(x))*((1-p)^(n-x))
+  test.stat <- -2*log(likelihood.0/likelihood.1)
+  
+  # test HO
+  if(alternative =="not equal"){
+    alpha <- alpha/2
+    p.value1 <- (1- pchisq(test.stat,df=1))
+    p.value2 <- pchisq(test.stat,df=1)
+    p.value <- min(c(p.value1, p.value2))
+      decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  }
+  else if(alternative =="lesser"){
+    p.value <- pchisq(test.stat,df=1)
+    decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  }
+  else if(alternative =="greater"){
+    p.value <- 1- pchisq(test.stat,df=1)
+    decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  }
+  else{
+    stop("Specify the correct alternative!")
+  }
+  
+
+  
+  cat("Testing Population Proportion Using Likelihood Ratio Test\n\n")
+  cat("Ho:The population proportion is greater than or equal to", pi.0,"\n")
+  cat("Likelihood Ratio Test Statistic:", test.stat,"\t","p-value:",p.value,"\n")
+  cat("P-value is compare to", alpha,"\n")
+  cat("Decision:", decision)
+  
+  return(list("LR.statistics" = test.stat,"p.value"=p.value, "decision"=decision))
+}
+```
+```{r}
+LR.test <- LR.test.prop(n=n,p=p.sample,pi.0 = pi.null, alternative = "not equal")
+```
+**Discussion**
+
+The Likelihood Ratio Test Statistics is 3.396009 and the p-value is 0.06535436. Based on the results, we fail to reject the null hypothesis because the p-value is greater than the significance level of 0.01. This means that there is not enough evidence to conclude that the population proportion is less than 0.75. Therefore, at least 75% of the district's parents support extending the school day by 30 minutes to provide for more physical education time. 
+
+# Exercise 2
+
+## Problem
+
+Using the `Adult dataset`, do the following
+
+1. Visualize the distribution the income.
+2. Estimate the proportion of the population having income at most $50k per year.
+
+> a. point estimate
+> b. 97% CI
+
+3. Test the hypothesis that less than 50% of the population are earning more than $50k per year at 3% level of significance.
+
+## Dataset
+
+### Load the Dataset
+```{r, warning=FALSE}
+# Specify the file path relative to the working directory
+file_path <- "/Users/User/Downloads/adult.csv"
+
+# Read the CSV file
+demographic_info <- read.csv(file_path, sep = ",", header=TRUE, 
+                             col.names = c("age", "workclass", "fnlwgt", 
+                                           "education", "educational-num",
+                                           "marital-status", "occupation", 
+                                           "relationship", "race", "sex",
+                                           "capital-gain", "capital-loss", 
+                                           "hours-per-week", "native-country","income"))
+
+# View the data
+head(demographic_info)
+```
+### Data Preparation
+```{r}
+# str() function help inspect the structure and levels of the 'income' column
+str(demographic_info$income)
+```
+
+```{r}
+# Convert 'income' column form the dataset to a factor.
+income.factor <- factor(demographic_info$income)
+```
+
+```{r}
+# str() function help inspect the structure and levels of the converted 'income' column.
+str(income.factor)
+```
+## Visualization 
+```{r}
+# Display the distribution of levels in 'income.factor' by frequency.
+knitr::kable(table(income.factor))
+```
+\newpage
+
+```{r, fig.cap="\\label{fig:rel} The Distribution of Income By Frequency"}
+# Visualize the distribution of the income using bar plot
+ggplot(data.frame(income = income.factor), aes(x = income)) + 
+  geom_bar( fill = c("darkolivegreen2",  "darkolivegreen4")) + 
+  labs(title = "Frequency Distribution of Income", x = "Income", y = "Frequency")
+```
+
+**Interpretation**
+
+Figure \ref{fig:rel} depicts the frequency distribution of the income of adults earning at most 50,000 dollars and greater than 50,000 dollars. The dataset comprises 12,435 individuals whose income is less than or equal to 50,000 dollars. Additionally, there are 3,846 individuals whose income exceeds 50,000 dollars.
+
+## Proportion Estimation
+
+Estimate the proportion of the population having income at most $50k per year.
+
+### Point Estimate
+```{r}
+# table() function to calculate frequencies of income
+income.freq <- table(income.factor)
+
+# prop.table() function to calculate relative frequencies
+income.relativefreq <- prop.table(income.freq)
+
+# A data frame for the tables
+income <- data.frame(income.freq = names(income.freq), Frequency = as.vector(income.freq),
+                     Relative.Frequency = as.vector(income.relativefreq))
+income
+```
+**Interpretation**
+
+The table displays the frequency and the relative frequency of adults who earn $\leq 50K$ and $>50K$. For incomes at most 50000 dollars, there are 12,435 occurrences which is approximately 76.38% of the total. For incomes greater than 50000 dollars, there are 3,846 occurrences which approximately 23.62% of the total. Majority of the population earn $>50K$.
+
+
+Using the results above, we can now proceed to extracting proportion of population with income $\leq 50k$ per year.
+```{r}
+# A dataframe extracting the proportion of population with income at most $50k per year  
+income <- data.frame(income.factor = c("<=50K", ">50K"), 
+                     relative.frequency = c(0.7637737, 0.2362263))
+
+# Calculate the proportion of the population with income at most $50k per year
+income.atmost50k <- income$relative.frequency[income$income.factor == "<=50K"]
+
+# Print the proportion of the population with income at most $50k per year
+cat("The proportion of population with income at most $50k per year:", income.atmost50k, "\n")
+```
+### 97% CI
+```{r}
+# Calculate the total frequency
+total.freq <- sum(income.freq)
+total.freq
+```
+
+Taking the obtained results as shown in the 'income' table
+```{r}
+# total frequency
+n <- 16281 
+# Frequency of population earning at most $50K each year 
+x <- 12435  
+# proportion of population of adults earning at most $50K each year (x/n)
+p.sample <- 0.7638 
+# null hypothesis 
+pi.null <- 0.5 
+```
+
+#### Wald Test
+
+Since the confidence interval is 97%, the $\alpha$ = 0.03
+```{r}
+# let's create a function that compute the wald z statistics
+# wald confidence interval, and test the H0:pi=pi.0
+wald.test.prop <- function(n,p,pi.0=0.5,alpha=0.03,confidence=T, 
+                      alternative = c("lesser","greater", "not equal")){
+  
+  # compute statistic
+  dif <- p-pi.0
+  se = sqrt(p*(1-p)/n)
+  test.stat <- (dif)/(se)
+  
+  # compute confidence interval
+  if(confidence){
+    z_ <- abs(qnorm(alpha/2))
+    lower.limit <- max(c(0,p - (z_*se)))
+    upper.limit <- min(c(p + (z_*se),1))
+    confidence.interval <- c(lower.limit,upper.limit)
+    names(confidence.interval) <- c("lower limit", "upper limit")
+  }
+  
+  # test HO
+  if(alternative =="not equal"){
+    p.value <- (1- pnorm(abs(test.stat)))*2
+  }
+  else if(alternative =="lesser"){
+    p.value <- pnorm(test.stat)
+  }
+  else if(alternative =="greater"){
+    p.value <- pnorm(abs(test.stat))
+  }
+  else{
+    stop("Specify the correct alternative!")
+  }
+  
+  decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  
+  cat("Testing Population Proportion Using Wald Test\n\n")
+  cat("Ho:The population proportion is less than or equal to", pi.0,"\n")
+  cat("Wald Test Statistic:", test.stat,"\t","p-value:",p.value,"\n")
+  cat((1-alpha)*100,"CI:",confidence.interval,"\n" )
+  cat("Decision:", decision)
+  
+  return(list("Wald.stat" = test.stat,"p.value"=p.value,
+              "CI"=confidence.interval, "decision"=decision))
+}
+```
+
+```{r}
+wald.res <- wald.test.prop(n=n,p=p.sample,pi.0 = pi.null, alternative = "not equal")
+```
+**Discussion**
+
+The results of the Wald Test indicate that the test statistic is 79.2475, with a corresponding p-value of 0. This extremely low p-value suggests strong evidence against the null hypothesis.
+
+Since the p-value = 0 is less than the level of significance of 0.03, we reject the null hypothesis. Thus, there is sufficient evidence to conclude that the population proportion of individuals earning more than $50k per year is greater than 0.5.
+
+### Hypothesis Testing
+
+Test the hypothesis that less than 50% of the population are earning more than $50k per year at 3% level of significance.
+
+#### Score Inference
+```{r}
+# let's create a function that compute the score z statistics
+# score confidence interval, and test the H0:pi=pi.0
+score.test.prop <- function(n,p,pi.0=0.5,alpha=0.03,confidence=T, 
+                      alternative = c("lesser","greater", "not equal")){
+  
+  # compute statistic
+  dif <- p-pi.0
+  se = sqrt(pi.0*(1-pi.0)/n)
+  test.stat <- (dif)/(se)
+  
+  # compute confidence interval
+  if(confidence){
+    z_ <- abs(qnorm(alpha/2))
+    lower.limit <- max(c(0,p - (z_*se)))
+    upper.limit <- min(c(p + (z_*se),1))
+    confidence.interval <- c(lower.limit,upper.limit)
+    names(confidence.interval) <- c("lower limit", "upper limit")
+  }
+  
+  # test HO
+  if(alternative =="not equal"){
+    p.value <- (1- pnorm(abs(test.stat)))*2
+  }
+  else if(alternative =="lesser"){
+    p.value <- pnorm(test.stat)
+  }
+  else if(alternative =="greater"){
+    p.value <- pnorm(abs(test.stat))
+  }
+  else{
+    stop("Specify the correct alternative!")
+  }
+  
+  decision <- ifelse(p.value > alpha,
+                     "Do not reject H0",
+                     "Reject HO")
+  
+  cat("Testing Population Proportion Using Score Test\n\n")
+  cat("Ho:The population proportion is less than", pi.0,"\n")
+  cat("Score Test Statistic:", test.stat,"\t","p-value:",p.value,"\n")
+  cat((1-alpha)*100,"CI:",confidence.interval,"\n" )
+  cat("Decision:", decision)
+  
+  return(list("Score" = test.stat,"p.value"=p.value,
+              "CI"=confidence.interval, "decision"=decision))
+}
+```
+```{r}
+score.res <- score.test.prop(n=n,p=p.sample,
+                             pi.0 = 0.5, alternative = "greater")
+```
+**Discussion**
+
+The Score Test Statistics is 67.32019 and the p-value is 1. It suggests that the observed data is consistent with the null hypothesis that less than 50% of the population earns more than $50,000 per year. Since the p-value = 1 is greater than the level of significance of 0.03, we cannot reject the null hypothesis. This suggests that there is insufficient evidence to conclude that less than 50% of the population earns more than 50000 dollars per year. Hence, we can conclude that less than 50% of the population earns more than 50000 dollars per year.
+
+# Reference
+
+- [Estimating a Population Mean](https://courses.lumenlearning.com/suny-hccc-wm-concepts-statistics/chapter/estimating-a-population-mean-3-of-3/#:~:text=An%20interval%20gives%20a%20more,margin%20of%20error%20is%20larger)
+
+- [Confidence intervals](https://handbook-5-1.cochrane.org/chapter_12/12_4_1_confidence_intervals.htm#:~:text=If%20the%20confidence%20interval%20is,the%20utility%20of%20the%20intervention)
+
+
+
+

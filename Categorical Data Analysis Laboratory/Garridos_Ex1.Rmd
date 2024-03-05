@@ -1,0 +1,151 @@
+---
+title: "Categorical Data Analysis Laboratory Exercise 1"
+author: "Garridos, Charlene P."
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+\vspace{1.5in}
+
+# Data Preparation
+## Load The Dataset
+```{r}
+data(mtcars)
+View(mtcars)
+```
+
+## Convert Gear Column To A Categorical Variable
+```{r}
+str(mtcars)
+```
+
+```{r}
+is.na(mtcars)
+```
+
+```{r}
+mtcars$gear
+```
+
+```{r}
+unique(mtcars$gear)
+```
+```{r}
+as.factor(mtcars$gear)
+```
+
+```{r}
+mtcars$gear <- as.factor(mtcars$gear)
+str(mtcars)
+```
+
+# Data Exploration
+## Summary of The Data
+```{r}
+summary(mtcars)
+```
+```{r}
+Gear_number <- mtcars$gear
+
+freq <- table(Gear_number)
+relative_freq <- prop.table(freq)
+
+result <- data.frame(Gear_number = names(freq), Frequency = as.vector(freq), 
+                    Relative_Frequency = as.vector(relative_freq))
+
+result
+```
+
+```{r}
+mode <- names(freq[freq == max(freq)])
+mode
+```
+**Interpretation**
+
+The results show that out of 32 car models, 15 have three gears. On the other hand, only 5 of the cars have 5 gears, and the rest have 4 gears. This means that the common (mode) number of gears is 3 gears.
+
+\vspace{4.2in}
+## Visualization
+```{r}
+plot(Gear_number, xlab = "Number of Gears", 
+     ylab = "Count", 
+     main = "The Distribution of Car Models Based on the Number of Gears", 
+     col = "dark green")
+```
+**Interpretation**
+
+The figure above shows the distribution of 32 automobiles based on the number of gears. There are three categories: '3', '4', and '5'. Fifteen car models have three gears. Out of 35, twelve automobiles have four gears. Lastly, only 5 cars have 5 gears.
+
+# Association Test
+
+## Convert Transmission Column To A Categorical Variable
+```{r}
+mtcars$am <- as.factor(mtcars$am)
+str(mtcars)
+```
+## Contingency table
+```{r}
+Gear_number <- mtcars$gear
+Transmission_type <- mtcars$am
+table(Gear_number, Transmission_type, dnn = c("Number of Gears", "Type of Transmission")) 
+```
+```{r, fig.height=4}
+library(ggplot2)
+ggplot(mtcars, aes(factor(gear), fill = factor(am))) +
+  geom_bar(position = "dodge")
+```
+
+\vspace{2in}
+
+**Interpretation**
+
+The contingency table and the graph displays the number of automobiles based on two variables: transmission type and number of gears. As previously stated, the number of gears is classified into three groups. As for the transmission, there are two types, which are 0 for automatic and 1 for manual.
+
+Fifteen cars are automatic and belong to the category of 3 gears. As for the cars that have 4 gears, out of 12, eight manual and four are automatic. In terms of having 5 gears, all five cars are manual.
+
+## Chi-Square Test for Independence
+
+>- $H_O$: There is no relationship between the type of gear and type of transmission.
+
+>- $H_1$: There is relationship between the number of gear and type of transmission.
+
+>- Level of Significance, $\alpha$ = 0.05
+
+```{r, warning=FALSE}
+Chisq_test <- chisq.test(Gear_number, Transmission_type) 
+Chisq_test
+```
+
+**Interpretation of the Results**
+
+The p-value is 2.831e-05, which is less than the significant level of 0.05. Hence, there is enough evidence to reject the null hypothesis and accept the alternative hypothesis. Therefore, this suggest a significant relationship between the number of gears and the type of transmission.
+
+# Data Interpretation
+
+## Significant Association 
+
+In the statistical output that is mentioned previously, fifteen cars that have three gears are all automatic. Out of the 12 automobiles with four gears, eight are manual and four are automatic. Additionally, all five cars that have five gears are all manual.   
+
+Based on the data, the association between the number of gears and the type of transmission is that if the car is automatic, a lesser number of gears are required. Given that it is the appropriate number for the appropriate amount of engine power that goes to the wheels to drive at any given speed and because automatic transmissions have a torque converter. Furthermore, if the type of transmission of the car is manual then it requires a larger number of gears. This explains why all the cars with 3 gears are all automatic and all the cars with 5 gears are all manual. Thus, there is significant association between the number of gears and the type of transmission.
+
+## Reflection
+
+Aside from the fact that it tests the relation or association of one variable to another and how other variables affect each other, it is also beneficial as a guide in making decisions by understanding the behavior of the data. For instance, since the number of gears and the type of transmission are related, the company wants to know if a particular gear number is more suitable for certain transmission types. The company can adjust the production based on the results if the number of gears cannot suffice for this certain transmission type. To elaborate more, if decreasing the number of gears to two will result in a much faster speed than having three gears, then the particular gear number for a certain transmission type is useful for making production plans and manufacturing products with better features. This information is useful for advertising. Furthermore, the company can also expand its study to develop a much more efficient product that is sellable to buyers. Supported by science and strong analysis, the company can market their car products to the public, which will not only attract buyers but also investors.
+ 
+# Reference
+
+- <https://plotnine.readthedocs.io/en/stable/generated/plotnine.data.mtcars.html>
+
+- <https://www.geeksforgeeks.org/contingency-tables-in-r-programming/>
+
+- <https://statsandr.com/blog/chi-square-test-of-independence-in-r/>
+
+
+
+
+
+
+

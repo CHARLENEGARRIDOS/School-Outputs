@@ -1,0 +1,212 @@
+---
+title: "Exercise: Adult Dataset"
+author: "Garridos, Charlene P."
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# R library
+```{r}
+library(forcats)
+library(kableExtra)
+library(tidyverse)
+```
+
+# Dataset Overview
+The Adult dataset contains demographic information about adults from the 1994 U.S. census. Key columns include:
+
+- age: continuous.
+- workclass: Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, etc.
+- education: Bachelors, Some-college, 11th, HS-grad, Prof-school, etc.
+- marital-status: Married-civ-spouse, Divorced, Never-married, etc.
+- occupation: Tech-support, Craft-repair, Other-service, Sales, etc.
+- relationship: Wife, Own-child, Husband, Not-in-family, etc.
+- race: White, Asian-Pac-Islander, Amer-Indian-Eskimo, Other, Black.
+- sex: Female, Male.
+- native-country: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, etc.
+- income: $> 50K$, $\leq 50K$.
+
+# Load the Dataset
+```{r, warning=FALSE}
+# Specify the file path relative to the working directory
+file_path <- "/Users/User/Downloads/adult.csv"
+
+# Read the CSV file
+demographic_info <- read.csv(file_path, sep = ",", header=TRUE, 
+                             col.names = c("age", "workclass", "fnlwgt", 
+                                           "education", "educational-num",
+                                           "marital-status", "occupation", 
+                                           "relationship", "race", "sex",
+                                           "capital-gain", "capital-loss", 
+                                           "hours-per-week", "native-country","income"))
+
+# View the data
+head(demographic_info)
+```
+
+# Inspect the data
+```{r, warning=FALSE}
+demographic_info_factor <- factor(demographic_info)
+demographic_info_workclass <- factor(demographic_info$workclass)
+demographic_info_education <- factor(demographic_info$education)
+demographic_info_native.country <- factor(demographic_info$native.country)
+```
+
+```{r}
+# Functions like levels() and str() help inspect the structure and levels of a factor.
+str(demographic_info)
+str(demographic_info_factor)
+```
+
+```{r}
+# Functions like levels() and str() help inspect the structure and levels of a factor.
+levels(demographic_info)
+levels(demographic_info_workclass)
+levels(demographic_info_education)
+levels(demographic_info_native.country)
+```
+
+\newpage
+
+# Handling the Missing Value
+```{r}
+# Make NA values explicit
+workclass.na_explicit <- fct_na_value_to_level(demographic_info$workclass, 
+                                               level = "No Response")
+occupation.na_explicit <- fct_na_value_to_level(demographic_info$occupation, 
+                                                level = "No Response")
+native.country.na_explicit <- fct_na_value_to_level(demographic_info$native.country, 
+                                                    level = "No Response")
+```
+```{r}
+# Print the resulting factor
+knitr::kable(table(workclass.na_explicit))
+knitr::kable(table(occupation.na_explicit))
+knitr::kable(table(native.country.na_explicit))
+```
+
+# Combining Categories
+```{r}
+# fct_unique() function to provide the unique values of demographic_info$education.
+fct_unique(demographic_info$education)
+```
+```{r}
+# Collapse all types of primary and secondary education into a single “School” category.
+education.collapsed <- fct_collapse(demographic_info$education,
+                                    School =c(" 11th"," HS-grad"," 10th"," 7th-8th",
+                                             " 5th-6th", " 9th",
+                                             " 12th"," 1st-4th"," Preschool"))
+
+# Print the resulting factor to see the collapse effect
+knitr::kable(table(education.collapsed))
+```
+```{r}
+# fct_unique() function to provide the unique values of demographic_info$workclass.
+fct_unique(demographic_info$workclass)
+```
+```{r}
+# Collapse  all government employees (Federal, State, Local) into a “Government” category.
+workclass.collapsed <- fct_collapse(demographic_info$workclass,
+                                   Government =c(" Local-gov"," State-gov",
+                                              " Federal-gov"))
+
+# Print the resulting factor to see the collapse effect
+knitr::kable(table(workclass.collapsed))
+```
+
+# Reordering Levels Based on Frequency
+```{r}
+# Reorder factor levels by frequency
+occupation_in.freq <- fct_infreq(demographic_info$occupation)
+
+# Display the levels of the reordered factor
+levels(occupation_in.freq)
+```
+
+# Creating an Ordinal Factor
+```{r}
+education.releveled <- fct_relevel(demographic_info$education, " Preschool", " 1st-4th", 
+                                   " 5th-6th", " 7th-8th", " 9th", " 10th", " 11th", 
+                                   " 12th", " HS-grad", " Some-college", " Assoc-voc", 
+                                   " Assoc-acdm", " Bachelors", " Masters", 
+                                   " Prof-school", " Doctorate")
+
+# Display the levels of the releveled factor
+levels(education.releveled)
+```
+
+# Factor Level Reduction
+```{r}
+# Lump together all countries with a frequency of less than 100 into an “Other” category.
+native.country.lumped <- fct_lump(demographic_info$native.country, n = 3, 
+                                  other_level = "Other")
+
+# Print the resulting factor to see the lump effect
+table(native.country.lumped)
+```
+
+# Visualization
+```{r}
+# Reorder factor levels by frequency
+occupation.infreq <- fct_infreq(demographic_info$occupation)
+
+# Print the levels of the reordered factor levels by frequency
+knitr::kable(table(occupation.infreq))
+```
+
+```{r, fig.cap="\\label{fig:rel} The Distribution of Occupation By Frequency"}
+# Create a bar plot with the frequency order
+ggplot(data.frame(Occupation = occupation.infreq), aes(x = Occupation)) +
+  geom_bar(show.legend = TRUE, fill = c("turquoise1", "turquoise2",
+                                        "turquoise3", "turquoise4","skyblue3",
+                                        "lightskyblue3","skyblue2","paleturquoise3", 
+                                        "skyblue1","skyblue","lightskyblue2", 
+                                        "lightskyblue1", "lightblue1","paleturquoise2",
+                                        "paleturquoise1")) +
+  labs(title = "Distribution of Occupation By Frequency", x = "Occupation", y = "Count") +
+  scale_x_discrete(guide = guide_axis(n.dodge=4)) +
+  geom_text(aes(label = ..count..), stat = "count", vjust = 0, size = 3, 
+            color = "black", hjust = 0.5) 
+
+```
+
+\newpage
+
+**Interpretation**
+
+Figure \ref{fig:rel} contains information about various occupations. The most common occupation is "Prof-specialty" with a frequency of 2032, followed closely by "Exec-managerial" with a frequency of 2020. "Craft-repair" and "Sales" are also quite common, with frequencies of 2013 and 1854, respectively. Occupations such as "Armed-Forces", "Priv-house-serv", and "Protective-serv" are among the least common, with frequencies of 6, 93, and 334, respectively. There are also 966 entries labeled as "?" which represent missing or unknown values in the dataset.
+
+# Summary of the Findings
+
+Dealing with a large amount of raw data, especially like this, which is more than a thousand, can be overwhelming. We cannot simply do data inspection or data cleaning manually. It would take too much time. It involves using tools and techniques for analysis, specifically handling missing values, simplifying categories, and organizing factors. Moreover, it is beneficial to know how to deal with this large quantity of data, particularly dealing with a lot of data that is missing. values denoted as '?', ensuring accurate conclusions.
+
+The wrangling process is so effective to use in order to improve the ways of analyzing data and also to improve data quality. There are various functions to choose from in order to achieve the way we want to analyze the data. Though it might seem confusing at first, especially since I am not too familiar with it since it was my first encounter with it when it was discussed, Nevertheless, the data wrangling procedure is efficient and improves the reliability of results.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
