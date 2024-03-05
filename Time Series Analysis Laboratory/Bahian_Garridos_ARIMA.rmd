@@ -1,0 +1,178 @@
+---
+title: "ARIMA"
+author: "Charlene P. Garridos & Ken Andrea Bahian"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+\vspace{4in}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+# R Libraries
+```{r}
+library(urca)   # Unit Root and Cointegration Tests for Time Series Data
+library(fpp3)   #"Forecasting: Principles and Practice" package
+```
+
+# Time Series Data
+```{r, fig.cap='Exports of the China as a percentage of GDP.'}
+global_economy |>
+  filter(Code == "CHN") |>
+  autoplot(Exports) +
+  labs(y = "% of GDP", title = "Chinese exports")
+```
+\vspace{0.5in}
+**Interpretation**
+
+>The time plot shows some non-stationarity,  initially showing growth followed by a noticeable decline. Higher exports usually boost a country's GDP, particularly for export-oriented economies like China. The trend of increasing exports typically aligns with GDP expansion. However, a decline in GDP was observed around 2007, despite this relationship.
+
+# R code selects a non-seasonal ARIMA model automatically.
+```{r}
+fit <- global_economy |>
+  filter(Code == "CHN") |>
+  model(ARIMA(Exports))
+report(fit)
+```
+
+# Forecast
+```{r, fig.cap='Forcasted Exports of the China as a percentage of GDP.'}
+fit |> forecast(h=10) |>
+  autoplot(global_economy) +
+  labs(y = "% of GDP", title = "Chinese exports")
+```
+
+# ACF
+```{r, fig.cap='ACF plot for the China Exports.', fig.height=3}
+global_economy |>
+  filter(Code == "CHN") |>
+  ACF(Exports) |>
+  autoplot()
+```
+
+# PACF
+```{r, fig.cap='PACF plot for the  China Exports.', fig.height=3}
+global_economy |>
+  filter(Code == "CHN") |>
+  PACF(Exports) |>
+  autoplot()
+```
+
+**Interpretation**
+
+>There is no evidence of changing variance, so we will not do a Box-Cox transformation.
+
+\vspace{2in}
+
+```{r, fig.cap='Time plot and ACF and PACF plots for the differenced China Exports.', warning=FALSE}
+global_economy |>
+  filter(Code == "CHN") |>
+  gg_tsdisplay(difference(Exports), plot_type='partial')
+```
+\vspace{0.3in}
+
+**Interpretation**
+
+>The ACF (AutoCorrelation Function) of the original data indicates that the data is not stationary. To address the non-stationarity, we will take a first difference of the data. The differenced data are shown in the figure above.
+
+
+```{r}
+fit2 <- global_economy |>
+  filter(Code == "CHN") |>
+  model(ARIMA(Exports ~ pdq(0,1,1)))
+report(fit2)
+```
+
+```{r}
+fit4 <- global_economy |>
+  filter(Code == "CHN") |>
+  model(ARIMA(Exports ~ pdq(1,1,0)))   
+report(fit4)
+```
+
+**Interpretation**
+
+>The Model 1 or fit2 model indicates that a model with a first-order moving average (MA) component. The estimated coefficient for the MA(1) term is 0.2915, and the standard error is 0.1217. The estimated variance $\sigma^2$ is 3.411, and the information criteria (AIC, AICc, and BIC) are provided for model evaluation.
+
+>Model 2 or fit4 model has a first-order autoregressive (AR) component. The estimated coefficient for the AR(1) term is 0.297, with a standard error of 0.125. The estimated variance $\sigma^2$ is 3.398, and similar information criteria are provided for model evaluation.
+
+>Based on the information provided, where the Partial Autocorrelation Function (PACF) suggests an ARIMA(0,1,1) model or IMA(1,1), and the fitted model fit4 and the Autocorrelation Function (ACF) suggest an ARIMA(1,1,0) model or ARI(1,1) which is an alternative candidate model.
+
+
+# Residuals
+```{r}
+chn_fit <- global_economy |>
+  filter(Code == "CHN") |>
+  model(arima011 = ARIMA(Exports ~ pdq(0,1,1)),
+        arima110 = ARIMA(Exports ~ pdq(1,1,0)),
+        stepwise = ARIMA(Exports),
+        search = ARIMA(Exports, stepwise=FALSE))
+
+chn_fit |> pivot_longer(!Country, names_to = "Model name",
+                         values_to = "Orders")
+```
+
+```{r}
+glance(chn_fit) |> arrange(AICc) |> select(.model:BIC)
+```
+
+```{r, fig.cap='Residual plots.'}
+chn_fit |>
+  select(search) |>
+  gg_tsresiduals()
+```
+
+```{r}
+augment(chn_fit) |>
+  filter(.model=='search') |>
+  features(.innov, ljung_box, lag = 10, dof = 1) 
+```
+
+\vspace{3in}
+
+**Interpretation**
+
+>The model ARIMA(1,1,0) appears to have the lowest AIC, AICc, and BIC values among the models considered. The Ljung-Box test for autocorrelation in the residuals of the search model shows a p-value of 0.833, suggesting that there is no significant autocorrelation in the residuals up to lag 10.
+
+> The  model, ARIMA(1,1,0), seems to be the preferred model based on the lowest AIC, AICc, and BIC values. The Ljung-Box test indicates that the residuals of the selected model do not show significant autocorrelation up to lag 10. 
+
+>The ACF plot of the residuals from the ARIMA(1,1,0) model shows that all autocorrelations are within the threshold limits, indicating that the residuals are behaving like white noise. A portmanteau test (setting K=10) returns a p-value of 0.833, suggesting that the residuals are white noise, and there is no significant autocorrelation up to lag 10.
+
+>In summary, the exhaustive search identified the ARIMA(1,1,0) model as providing a good fit to the data. This conclusion is based on almost identical AICc values among the models considered, with diagnostic checks, including the ACF plot of residuals and a portmanteau test (K=10), supporting the selection of ARIMA(1,1,0) as a suitable choice for forecasting the time series data for China.
+
+# Forecasts from the chosen model
+```{r, fig.cap='Forecasts for the China Exports.'}
+chn_fit |>
+  forecast(h=5) |>
+  filter(.model=='search') |>
+  autoplot(global_economy)
+```
+**Interpretation**
+
+>The figure shows the chosen forecast model which is ARIMA(1,1,0) and can be represented by the following equation:
+
+$$Z_t = \phi_1 Z_{t-1} + \varepsilon_t$$
+
+>In this case, with ARIMA(1,1,0):
+
+$$Z_t = 0.297 Z_{t-1} + \varepsilon_t$$
+
+>Here:
+
+- $Z_t$ is the differenced time series at time $t$.
+
+- $\phi_1$ is the autoregressive coefficient for lag 1, and in your case, it's 0.297.
+
+- $Z_{t-1}$ is the differenced time series at lag 1.
+
+- $\varepsilon_t$ is the white noise error term at time $t$.
+
+>This equation expresses the relationship between the differenced values of the time series and the lagged differenced values, with an autoregressive term of order 1. It's a concise representation of the dynamics of the ARIMA(1,1,0) model fitted to the data.
+
+
+
+
+

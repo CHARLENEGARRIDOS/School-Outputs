@@ -1,0 +1,157 @@
+---
+title: "Untitled"
+author: "Garridos"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#R Libraries
+```{r, message=FALSE, warning=FALSE}
+library(fpp3)
+library(urca)
+```
+
+# The Pharmaceutical Benefits Scheme (PBS) data Of 2021
+```{r, warning=FALSE}
+C01 <- PBS %>%
+  filter(ATC2 == "C01")
+print(C01)
+```
+# Historical Plot
+```{r, fig.cap="Monthly Cardiac Therapy Prescriptions and Costs: 1991-2008"}
+C01 <- PBS |>
+  filter(ATC2 == "C01") |>
+  summarise(Cost = sum(Cost)/1e6)
+C01 |>
+  mutate(log(Cost)) |>
+  pivot_longer(-Month) |>
+  ggplot(aes(x = Month, y = value)) +
+  geom_line() +
+  facet_grid(name ~ ., scales = "free_y") +
+  labs(y="", title="Prescription Numbers and Costs for Cardiac Therapy (C01)")
+```
+**Interpretation**
+
+> Data from July 1991 to June 2008 are plotted in Figure 9.23. There is a small increase in the variance with the level, so we take logarithms to stabilise the variance.The data are strongly seasonal and obviously non-stationary, so seasonal differencing will be used.
+
+# The seasonally differenced data
+```{r, warning=FALSE, fig.cap="Seasonally differenced Monthly Cardiac Therapy Prescriptions and Costs: 1991-2010"}
+C01 |>
+  gg_tsdisplay(difference(log(Cost), 12),
+                     plot_type='partial', lag_max = 24)
+```
+
+**Interpretation**
+
+>These are also clearly non-stationary. In the plots of the seasonally differenced data, there are spikes in the PACF at lags 12 and 24, but nothing at seasonal lags in the ACF. This may be suggestive of a seasonal AR(2) term. In the non-seasonal lags, there are three significant spikes in the PACF, suggesting a possible AR(3) term. The pattern in the ACF is not indicative of any simple model. Consequently, this initial analysis suggests that a possible model for these data is an ARIMA$(3,0,0)(2,1,0) _{12}$. We fit this model, along with some variations on it, and compute the AICc values shown in the figure below.
+
+# Employ the AICc criterion
+```{r}
+fit <- C01 |> 
+  model(
+    arima301012 = ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(0,1,2)),
+    arima301111 = ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(1,1,1)),
+    arima301011 = ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(0,1,1)),
+    arima301110 = ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(1,1,0)),
+    arima301210 = ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(2,1,0)),
+    arima300111 = ARIMA(log(Cost) ~ 0 + pdq(3,0,0) + PDQ(1,1,1)),
+    arima300110 = ARIMA(log(Cost) ~ 0 + pdq(3,0,0) + PDQ(1,1,0)),
+    arima302210 = ARIMA(log(Cost) ~ 0 + pdq(3,0,2) + PDQ(2,1,0)),
+    arima302310 = ARIMA(log(Cost) ~ 0 + pdq(3,0,2) + PDQ(3,1,0)),
+    auto = ARIMA(log(Cost), stepwise = FALSE, approx = FALSE)
+  )
+fit |> pivot_longer(everything(), names_to = "Model name",
+                     values_to = "Orders")
+
+glance(fit) |> arrange(AICc) |> select(.model:BIC)
+
+```
+
+**Interpretation**
+
+> Exploring various models allowed us to determine distinct values for AIC, AICc, and BIC for each model. Among these, the ARIMA model ARIMA$(3,0,1)(1,1,0) _{12}$ displayed the lowest values across AIC, AICc, and BIC, indicating its superior fit compared to the other models. 
+
+```{r, fig.cap="Innovation residuals from the ARIMA(3,0,1)(1,1,0)_{12} model applied to the C01 monthly script sales data."}
+fit <- C01 |>
+  model(ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(1,1,0)))
+fit |> gg_tsresiduals(lag_max=36)
+```
+
+**Interpretation**
+> At lag 24 out of 36, there is a notable and substantial spike, while the rest of the data pattern remains in line with a white noise pattern. To be sure, we use a Ljung-Box test, being careful to set the degrees of freedom to match the number of parameters in the model.
+
+```{r}
+augment(fit) |>
+  features(.innov, ljung_box, lag = 36, dof = 4)
+```
+**Interpretation**
+
+> The autocorrelation function (ACF) displays several notable peaks, and the model does not pass the Ljung-Box test. While it remains feasible to utilize the model for forecasting purposes, the accuracy of prediction intervals might be compromised as a result of the residual correlations detected.
+
+
+```{r, fig.cap="Innovation residuals from the ARIMA(3,0,1)(1,1,1)_{12} model applied to the C01 monthly script sales data."}
+fit2 <- C01 |>
+  model(ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(1,1,1)))
+fit |> gg_tsresiduals(lag_max=36)
+```
+
+
+**Interpretation**
+> There isn't a notable and substantial spike and the data pattern remains in line with a white noise pattern. To be sure, we use a Ljung-Box test, being careful to set the degrees of freedom to match the number of parameters in the model.
+
+```{r}
+augment(fit2) |>
+  features(.innov, ljung_box, lag = 36, dof = 5)
+```
+**Interpretation**
+
+> The high p-value provides confirmation that the residuals resemble white noise, meeting the criteria for our analysis.
+
+> Among all the models tested between this current model and the one with the lowest AIC, AICc, and BIC values, this specific model meets the defined criteria. Typically, the preferred approach would be to utilize the best model available, and this particular model fulfills that requirement.
+
+> Consequently, we've developed a seasonal ARIMA model that successfully clears the necessary assessments and is now primed for forecasting. The figure below depicts forecasts generated by the model for the upcoming years.
+
+
+
+#Test set evaluation
+```{r, fig.cap="Forecasts from the ARIMA(3,0,1)(1,1,1)_{12} model applied to the C01 monthly script sales data."}
+C01 |>
+  model(ARIMA(log(Cost) ~ 0 + pdq(3,0,1) + PDQ(1,1,1))) |>
+  forecast() |>
+  autoplot(C01) +
+  labs(y=" $AU (millions)",
+       title="Cardiac Therapy Prescription Numbers and Costs (C01)")
+```
+
+**Interpretation**
+> The figure shows the chosen forecast model which is ARIMA$(3,0,1)(1,1,1)_{12}$
+
+# The equation for the ARIMA$(3,0,1)(1,1,1)_{12}$ model 
+
+$$ Z_t = c + \phi_1 Z_{t-1} + \phi_2 Z_{t-2} + \phi_3 Z_{t-3} + a_t + \theta_1 a_{t-1} + \theta_2 a_{t-2} + b_{t-12} + \theta_{12,1} b_{t-13} + \theta_{12,2} b_{t-14} + \varepsilon_t $$
+
+> This equation represents the ARIMA(3,0,1)(1,1,1) model with a seasonality of 12, where
+
+
+- $Z_t$ is the observed time series.
+
+- $c$ is the constant term.
+
+- $\phi_1, \phi_2, \phi_3$ are the non-seasonal autoregressive coefficients.
+
+- $a_t$ is the white noise error term at time $t$.
+
+- $\theta_1, \theta_2$ are the non-seasonal moving average coefficients.
+
+- $b_{t-12}$ is the seasonal lag-12 term.
+
+- $\theta_{12,1}, \theta_{12,2}$ are the seasonal moving average coefficients.
+
+- $\varepsilon_t$ is the white noise error term.

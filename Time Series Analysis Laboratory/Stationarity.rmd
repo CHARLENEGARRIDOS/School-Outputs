@@ -1,0 +1,74 @@
+---
+title: "ARIMA"
+author: "Charlene P. Garridos & Ken Andrea Bahian"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+```{r}
+library(tinytex)
+library(urca)
+library(magrittr)
+```
+
+```{r}
+library(lubridate)
+
+gafa_stock <- read.csv("AAPL.csv")
+gafa_stock$Date <- as.Date(gafa_stock$Date, format = "%m/%d/%Y")
+
+
+apple_2014 <- gafa_stock %>%
+  filter(year(Date) == 2014)
+
+head(apple_2014)
+```
+```{r}
+library(dplyr)
+apple_2014 <- gafa_stock|>
+  filter(Symbol == "AAPL", year(Date) == 2014)
+```
+
+```{r}
+# Autocorrelation for Apple's closing stock price
+
+library(ggplot2)
+library(ggfortify)
+
+# Create a time series object
+apple_ts <- ts(apple_2014$Close, frequency = 365)
+
+apple_2014 |> autoplot(Close) + labs(subtitle = "Apple closing stock price")
+```
+```{r}
+apple_2014 |> ACF(Close) |>
+  autoplot() + labs(subtitle = "Apple closing stock price")
+apple_2014 |> ACF(difference(Close)) |>
+  autoplot() + labs(subtitle = "Changes in Apple closing stock price")
+```
+
+```{r}
+# Autocorrelation for Apple's closing stock price
+apple_2014 %>%
+  acf(Close) %>%
+  forecast::autoplot() + 
+  labs(subtitle = "Apple closing stock price")
+```
+```{r}
+# Autocorrelation for changes in Apple's closing stock price
+apple_2014 %>% 
+  Acf(difference(Close)) %>%
+  autoplot() + 
+  labs(subtitle = "Changes in Apple closing stock price")
+```
+
+```{r}
+apple_2014 %>%
+  mutate(Close_diff = c(NA, diff(Close))) %>%
+  Acf(Close_diff) %>%
+  autoplot() + 
+  labs(subtitle = "Changes in Apple closing stock price")
+```

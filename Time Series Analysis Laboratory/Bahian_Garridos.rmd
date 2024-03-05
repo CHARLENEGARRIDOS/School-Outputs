@@ -1,0 +1,243 @@
+---
+title: "Time Series Analysis of the Dynamics of Gross Domestic Product(GDP) in the Philippine Economy's Inflation and Demand from 1998 to 2019"
+author: "Charlene P. Garridos & Ken Andrea Bahian"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+# R Libraries
+```{r setup}
+library(fpp2) #"Forecasting: Principles and Practice" package
+library(forecast) # Forecasting Functions for Time Series and Linear Models
+```
+
+# Time Series Data (Description and Source)
+```{r}
+library(readxl)
+GDP_data <- (read_excel("Data_Philippine Inflation Dynamics.xlsx", sheet = 1))
+GDP_ts = ts(GDP_data[, 6], start = c(1998, 1), frequency = 4)
+print(GDP_ts)
+```
+
+**Data Description**
+
+>The data is from the study of Roperto Jr Deluna. It is all about the factors and dynamics affecting inflation in the context of the Philippine economy. The consumer price index (CPI) measured at the constant price for 2012 that was received from the Philippine Statistical Authority (PSA) serves as the dependent variable for this study. The Dated Brent, West Texas Intermediate, and Dubai Fateh spot prices are combined to create the global oil price (wop). Crude oil unit is U.S. Dollar per barrel secured from World Bank as published by Index Mundi.  Macroeconomic factors are also incorporated into the model, such as the real effective exchange rate (Ex) rate (Peso per U.S. Dollar) weighted average rate obtained from the Banko Sentral ng Pilipinas (BSP) under the Philippine Dealing System (PDS). The PSA's log value of the gross domestic product (lnq), which is expressed as a million Philippine pesos at constant 2018 prices, was utilized as a proxy for the economy's demand situation. The BSP's short-term interest rate (IntR) on 91-day Treasury bills served as the monetary response variable to manage the inflationary impact of oil shocks. 
+ 
+>The data is used to uncover the relationships between these variables to better understand how oil price fluctuations, exchange rates, economic output, and interest rates contribute to changes in inflation within the Philippines. It aims to provide insights into the complex interplay of these factors and their role in shaping the country's economic conditions. However, in this time series analysis, we will be utilizing GDP only. It is because GDP is a measure of the overall economic performance of the country which means it is beneficial to assess the state of demand in the economy and its impact on inflation.
+
+```{r, fig.align='center', fig.cap="Gross Domestic Product Over Time", fig.height=3}
+autoplot(GDP_ts)+ylab("GDP Rate(%)")
+```
+\vspace{0.5in}
+**Data Interpretation**
+
+>The Dynamics of GDP in the Philippines shows trend and seasonal pattern specifically from 1998 to 2009. 
+
+\vspace{4in}
+
+
+# Exploratory Data Analysis (EDA)
+```{r, fig.cap="Additive Time Series Decomposition", fig.height=4}
+decompose_GDP <- decompose(GDP_ts)
+plot(decompose_GDP)
+```
+
+**Interpretation**
+
+>This plot displays the additive decomposition of the Gross Domestic Product (GDP) measured quarterly from 1998 to 2019. It's apparent that a clear increasing trend is present, indicating a consistent upward movement in GDP over these years. Additionally, there are distinct seasonal patterns on a quarterly basis, which suggests repetitive patterns. Finally, the random component represents irregular fluctuations, accounting for unexplained variations in the data.
+
+\vspace{3in}
+
+## Trend
+```{r, fig.align = 'center',fig.cap = "Trend Component of Quarterly GDP Dynamics in the Philippine Economy from 1998 to 2019", fig.height=4}
+plot(decompose(GDP_ts)$trend,ylab= "GDP Rate(%)")
+```
+
+**Interpretation**
+
+>The figure above depicts a clear increasing trend of Gross Domestic Product (GDP) from 1998 to 2019. While GDP is not a direct factor causing inflation, it can indirectly influence inflation through its impact on demand for goods and services. High GDP growth may lead to increased demand and, if not matched by supply, can lead to demand-pull inflation. This implies that increasing GDP trend could potentially contribute to upward pressure on inflation, but other factors also play a significant role Moreover, this suggests that as GDP continues to grow, it may be associated with price increases for various products and services, contributing to inflationary pressures.
+
+\vspace{2in}
+## Season
+```{r, fig.align = 'center',fig.cap = "Seasonal Component of Quarterly GDP Dynamics in the Philippine Economy from 1998 to 2019",fig.height=4}
+plot(decompose(GDP_ts)$season,ylab= "GDP Rate(%)")
+```
+
+**Interpretation**
+
+>The plot displays a distinct seasonal pattern with a recurring 4-quarter cycle each year. Upon closer examination, it's evident that the first quarter and second quarter exhibit a rapid decrease from a high GDP rate, followed by an immediate increase in the third quarter and fourth quarter. This suggests a fluctuating or cyclical pattern of GDP rates, characterized by alternating periods of growth and decline. Notably, this pattern displays a high degree of consistency, repeating from year to year.
+
+\vspace{2.5in}
+
+## Random or Irregular
+```{r, fig.align = 'center',fig.cap = "Irregular Component of Quarterly GDP Dynamics in the Philippine Economy from 1998 to 2019", fig.height=3.5}
+plot(decompose(GDP_ts)$random,ylab= "GDP Rate(%)")
+```
+
+**Interpretation**
+
+>The random component in the GDP time series represents what remains in GDP data after seasonal and trend components have been removed. Unlike the seasonal and trend patterns, the random component in GDP data lacks a discernible cyclicality or long-term growth trend. Instead, it exhibits unpredictable and erratic movements. These irregular fluctuations in GDP can be attributed to various unforeseen factors, such as unexpected economic shocks, policy changes, or external events, which can have a significant and direct impact on the GDP figures. 
+
+\vspace{2in}
+
+## Seasonal Effect
+
+```{r, fig.align='center', fig.cap="GDP Seasonal Effect"}
+ggseasonplot(GDP_ts, year.labels=TRUE, continuous=TRUE, col = rainbow(12))
+```
+
+\vspace{3in}
+
+# Data Partitioning
+```{r, fig.align='center', fig.cap="GDP Data Partitioning"}
+GDP_data_training_set <- GDP_ts[1:70]
+GDP_data_training_set <- ts(GDP_data_training_set,
+                            start = c(1998, 1), frequency = 4)
+GDP_data_testing_set <- GDP_ts[71:88]
+GDP_data_testing_set <- ts(GDP_data_testing_set,
+                           start = c(2015, 3), frequency = 4)
+autoplot(GDP_data_training_set, main="Training Set")+ylab("GDP Rate(%)")
+```
+\vspace{5in}
+
+# Model Fitting
+## Simple Exponential Smoothing
+```{r, fig.align='center', fig.cap="Simple Exponential Smoothing Model", fig.height=4}
+#SES
+GDP_data_ses_model <- ses(GDP_data_training_set,h=length(GDP_data_testing_set))
+autoplot(GDP_data_ses_model)+ autolayer(fitted(GDP_data_ses_model),series="Fitted")+
+ylab("GDP Rate(%)")
+```
+
+**Interpretation**
+
+>This model displays predictions generated through Simple Exponential Smoothing, a method that uses the most recent data point in the dataset to forecast future values. Similar to naive forecasts, this approach results in a straight horizontal line, reflecting the historical data pattern.
+
+
+**Training Performance**
+```{r}
+accuracy(GDP_data_ses_model)
+```
+
+\vspace{2in}
+## Holt Smoothing
+```{r, fig.align='center', fig.cap="Holt Smoothing Model", fig.height=4}
+#holt
+GDP_data_holt_model <- holt(GDP_data_training_set,h=length(GDP_data_testing_set))
+autoplot(GDP_data_holt_model)+ autolayer(fitted(GDP_data_holt_model),series="Fitted")+
+  ylab("GDP Rate(%)")
+```
+
+**Interpretation**
+
+>This model exhibits forecasts produced by Holt's Method, specifically designed for data sets displaying a trend. Consequently, the historical plot indicates that the forecasted values align with the trend observed in the past data points.
+
+
+**Training Performance**
+```{r}
+accuracy(GDP_data_holt_model)
+```
+
+\vspace{2in}
+
+## Holt-Winter Smoothing
+```{r, fig.align='center', fig.cap="Holt-Winter Smoothing Model", fig.height=4}
+GDP_data_hw_model <- hw(GDP_data_training_set,h=length(GDP_data_testing_set))
+autoplot(GDP_data_hw_model)+ autolayer(fitted(GDP_data_hw_model),series="Fitted")+
+ylab("GDP Rate(%)")
+```
+
+**Interpretation**
+
+>This model showcases predictions generated using Holt-Winter Smoothing, a method that incorporates both seasonality and trend when making forecasts. Consequently, the displayed forecasted data integrates the historical trend and seasonal patterns observed in the dataset, providing a comprehensive view based on past data.
+
+
+**Training Performance**
+```{r}
+accuracy(GDP_data_hw_model)
+```
+
+\vspace{2in}
+
+# Model Selection
+
+## Testing Performance of Simple Exponential Smoothing
+```{r}
+accuracy(GDP_data_ses_model,x=GDP_data_testing_set)
+```
+
+## Testing Performance of Holt Smoothing
+```{r}
+accuracy(GDP_data_holt_model,x=GDP_data_testing_set)
+```
+
+## Testing Performance of Holt-Winter Smoothing
+```{r}
+accuracy(GDP_data_hw_model,x=GDP_data_testing_set)
+```
+**Interpretation**
+
+>Upon examining the aforementioned results, it becomes apparent that Holt Smoothing and Holt-Winter Smoothing models demonstrate similar performance in the testing phase. Simple Exponential Smoothing, however, outperforms the other two smoothing methods in terms of testing results, making it an unfavorable choice for the final model.When comparing Holt's Smoothing and Holt-Winter Smoothing, Holt-Winter Smoothing shows lower values in the training set, signifying its accuracy in capturing the inherent data patterns and seasonality. However, in the testing set, Holt's Smoothing performs the best among the three, indicating its ability to generalize effectively to new, unseen data. This is a critical factor, as the primary goal of a forecasting model is to make precise predictions for data it hasn't encountered before. Therefore, Holt's Smoothing stands out as the superior choice among the three models for forecasting purposes.
+
+\vspace{2in}
+
+# Diagnostic
+
+```{r, fig.align='center', fig.cap="Diagnostic of Holt Smoothing"}
+checkresiduals(GDP_data_holt_model)
+```
+
+\vspace{2.3in}
+
+**Interpretation**
+
+>Based on the findings, the 'Holt Smoothing Model' appears to perform the best for the test set among the three models, as it exhibits the lowest RMSE and MAE values. The following are several characteristics of the model's residual that are important to note: 
+
+>1. **Stationarity:** The residuals do not exhibit stationarity; they show varying mean and variance over time.
+
+>2. **Distribution:** The residuals appear to be normally distributed with a slight left skew.
+
+>3. **Autocorrelation:** Autocorrelation in the residuals is observed, indicating that there is a pattern or structure in the residuals that can be predicted from past residuals.
+
+>4. **Lag Examination:** The autocorrelation was examined with respect to the eight most recent observations. Notably, upon closer examination of the ACF (AutoCorrelation Function) plot, the following patterns are discernible:
+
+   >>> -Below the horizontal line at 0.0, there is a noticeable crossover between the middle line around the 4th and 8th lags, and this pattern repeats after two cycles, between the 16th and 20th lags. There is also a consistent pattern between the 8th and 12th lags, as well as between the 12th and 16th lags.
+
+   >>> -Above the horizontal line at 0.0, there are decreasing vertical lines at the 4th, 8th, 12th, and 16th lags, suggesting diminishing autocorrelation at these lags.
+
+
+# Final Model
+
+## Holt Final Model For GDP
+```{r, fig.align='center', fig.cap="Holt Model of the Dynamics of Gross Domestic Product (GDP)"}
+GDP_holt_model_final <- holt(GDP_ts,h=5)
+GDP_holt_model_final$model
+GDP_holt_model_final
+autoplot(GDP_holt_model_final)
+```
+
+**Interpretation** 
+
+> The final model, which is the Holt Smoothing Model, has demonstrated strong performance in our analysis, particularly in the context of GDP and inflation forecasting. It exhibits the lowest RMSE and MAE values among the models considered, indicating its ability to provide accurate forecasts in these critical economic domains. Additionally, the model's fit to the data is assessed using information criteria:
+
+>1. **AIC (Akaike Information Criterion):** The AIC value for this model is -282.7420.
+
+>2. **AICc (Corrected Akaike Information Criterion):** The corrected AICc value is -282.0103.
+
+>3. **BIC (Bayesian Information Criterion):** The BIC value is -270.3553.
+
+>Overall, our analysis of three forecasting models—Simple Exponential Smoothing (SES), Holt Smoothing, and Holt-Winter Smoothing—revealed that the 'Holt Smoothing Model' stands out as the best performer for the test set based on key metrics, including RMSE and MAE. It consistently achieved the lowest error values, indicating its ability to provide accurate forecasts in the vital context of GDP and inflation. The Holt Smoothing Model has proven its forecasting prowess and stands as the preferred choice for this specific forecasting task.
+
+# References 
+[Deluna, Roperto Jr (2021), “A Nonlinear ARDL Model of Inflation Dynamics in the Philippine Economy ”, Mendeley Data, V2, doi: 10.17632/4ps2zth23m.2](https://data.mendeley.com/datasets/4ps2zth23m/2?fbclid=IwAR1tQbDqoEXcTpXnZQjIXUbN82Dq6ext3abmI0qi0tycDB-OgmKWWmUqcRg)
+
+
+
+
+
+
+
+

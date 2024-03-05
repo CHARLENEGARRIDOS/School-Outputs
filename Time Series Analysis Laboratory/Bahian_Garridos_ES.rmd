@@ -1,0 +1,180 @@
+---
+title: "Stationarity Analysis and Differencing of Apple Stock Data in 2014"
+author: "Charlene P. Garridos & Ken Andrea Bahian"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+\vspace{4in}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# R Libraries
+```{r}
+library(urca)   # Unit Root and Cointegration Tests for Time Series Data
+library(fpp3)   #"Forecasting: Principles and Practice" package
+```
+
+# Time Series Data
+```{r}
+apple_2014 <- gafa_stock %>%
+  filter(Symbol == "AAPL", year(Date) == 2014)
+head(apple_2014)
+```
+
+# Time Plot
+```{r}
+# Time plot for 'Close' prices
+autoplot(apple_2014, data = apple_2014, mapping = aes(x = Date, y = Close)) +
+  labs(title = "Apple Stock Close Prices in 2014", x = "Date",
+       y = "Change in Apple closing stock price($USD)")
+```
+**Interpretation**
+
+> Evidently, the plot may have covariance independent of time, and the mean increases over time, indicating that it is not constant. Additionally, it exhibits volatility, signifying that the variance is not also constant (heteroskedastic). Consequently, the series is non-stationary, necessitating a transformation to convert it from a non-stationary state to a stationary one. This transformation is commonly referred to as differencing.
+
+
+# Autocorrelation Function (ACF)
+```{r, warning=FALSE}
+# ACF plot
+apple_2014 %>% ACF(Close) %>%
+  autoplot() + labs(subtitle = "Apple closing stock price")
+```
+
+**Interpretation**
+
+>The lag is set to 1, and when analyzing the Autocorrelation Function (ACF) of the Apple closing stock price in 2014, it is evident that the ACF values do not drop to zero quickly. This lack of a rapid drop in ACF values implies non-stationarity in the data since the values decrease slowly over time.
+
+>Furthermore, it's important to note that the first ACF value is 1, indicating a strong positive correlation between the time series and its lagged values at a lag of 1. This suggests a pronounced one-period lag effect, signifying that each observation is strongly correlated with the preceding one.
+
+>Additionally, the vertical lines on the ACF plot exceed the horizontal blue lines which is the critical values. This phenomenon indicates significant autocorrelation in the data at the given lag, suggesting a potential pattern or dependence between the closing stock prices and their past values. 
+
+
+# Differencing
+```{r, warning=FALSE}
+# Differencing
+apple_2014 %>% ACF(difference(Close)) %>%
+  autoplot() + labs(subtitle = "Changes in Apple closing stock price")
+```
+
+**Interpretation**
+
+> Based on the observation, from a subjective perspective, it appears that the time series has become stationary after a single differencing or first differencing. Additionally, I've noted that three prominent spikes have exceeded the horizontal blue dashed lines, which serve as indicators of statistical significance. This suggests that the correlation at those specific lags is statistically significant, indicating the presence of a distinct pattern or dependence in the data at those time intervals.
+
+>Conversely, a substantial portion of the autocorrelation values falls within the range defined by the blue lines. This implies that at those lags, the correlation is not statistically significant. In other words, the observed correlation might not differ significantly from what would be expected by random chance.
+
+```{r, warning=FALSE}
+#Compute the differenced series
+diff_close <- diff(apple_2014$Close)
+
+# Create a data frame for visualization
+df <- data.frame(Time = seq_along(apple_2014$Close),
+                 Original = apple_2014$Close,
+                 Differenced = c(NA, diff_close))
+
+# Create a line graph using ggplot2
+ggplot(df, aes(x = Time)) +
+  geom_line(aes(y = Original, color = "Original"), size = 1, linetype = "solid") +
+  geom_line(aes(y = Differenced, color = "Differenced"), size = 1, linetype = "solid") +
+  labs(title = "Original vs. Differenced of Apple 2014 Closing Stock Price",
+       x = "Time", y = "Change in Apple closing stock price($USD)") +
+  scale_linetype_manual(values = c("solid", "solid")) +
+  scale_color_manual(values = c("Original" = "black", "Differenced" = "red")) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+**Interpretation**
+
+>In the initial dataset analysis, we observed changing trends and fluctuations, making it unsuitable for standard statistical methods that assume data stability. To address this, we applied first-order differencing, effectively removing the overall trend with a single subtraction operation between consecutive values. Surprisingly, this simple step rendered the data stable, eliminating trends and systematic patterns. The resulting series showed steady mean, making it ideal for consistent analysis using statistical methods. This stability after just one difference simplified future analyses and provided a strong foundation for predictions.
+
+# Test H_0(Stationary) Using KPSS
+```{r}
+apple_2014 %>%
+  mutate(diff_close = difference(Close)) %>%
+  features(diff_close, ljung_box, lag = 10)
+```
+
+```{r}
+apple_2014 %>%
+  features(Close, unitroot_kpss)
+```
+
+**Interpretation**
+
+>The LB statistic is 8.67, and its associated p-value is 0.564. Since the p-value (0.564) exceeds the common significance level of 0.05 (or 5%), you do not reject the null hypothesis (H0). This indicates a lack of significant autocorrelation in the residuals for lags up to 10, implying independence in the residuals up to that lag.
+
+>On the other hand, the KPSS test is employed to ascertain whether a time series exhibits stationarity around a deterministic trend. The KPSS statistic is 4.07, and its associated p-value is 0.01. With a p-value of 0.01, which falls below the typical significance level of 0.05, we reject the null hypothesis (H0). This signifies that the time series is non-stationary, suggesting the presence of a unit root or a deterministic trend.
+
+```{r}
+apple_2014 %>%
+  mutate(diff_close = difference(Close)) %>%
+  features(diff_close, unitroot_kpss)
+```
+
+**Interpretation**
+
+>The KPSS statistic (0.0781) is lower than the critical values typically used at standard significance levels (e.g., 0.05 or 0.01), indicating that the time series does not exhibit a unit root or a deterministic trend. This suggests stationarity. In simpler terms, the series is stationary around its mean or displays trend-stationarity. The low KPSS statistic reinforces the effectiveness of differencing the time series (as we did with diff_close) in achieving stationarity.
+
+>Moreover, the reported p-value is 0.1, which is higher than common significance levels, further supporting the conclusion of stationarity.
+
+>In summary, the KPSS test results confirm stationarity in the differenced time series, and there is no compelling evidence of a unit root or non-stationary behavior. The null hypothesis is accepted, indicating stationarity after differencing.
+
+
+```{r}
+apple_2014 %>%
+  features(Close, unitroot_ndiffs)
+```
+
+**Interpretation**
+
+>After applying a single difference to the original closing prices of Apple stock for the year 2014, the resulting time series appears to become stationary. This suggests that differencing the data once has effectively removed significant trends or seasonality. Consequently, the series is now suitable for further time series modeling and analysis. 
+
+>In summary, a single difference (ndiffs = 1) in the 'Close' price series of Apple stock data from 2014, denoted as 'apple_2014,' is sufficient to achieve stationarity.
+
+# Bonus: Augmented Dickey-Fuller (ADF) test
+```{r}
+library(tseries)
+
+# Perform Augmented Dickey-Fuller (ADF) test
+adf_test <- ur.df(apple_2014$Close, type = "drift", lags = 1, selectlags = "AIC")
+
+# Print ADF test results
+summary(adf_test)
+
+# Perform ADF test
+result_adf <- adf.test(apple_2014$Close, alternative = "stationary")
+
+# Print ADF test results
+print(result_adf)
+```
+**Interpretation**
+
+>We conducted two separate ADF tests using the urca and tseries libraries. In both cases, the obtained results exceeded the significance level (alpha = 0.05). Consequently, neither ADF test provided enough evidence to reject the null hypothesis. This suggests that the original data remains non-stationary.
+
+```{r}
+#Compute the differenced series
+diff_close <- diff(apple_2014$Close)
+
+# Perform Augmented Dickey-Fuller (ADF) test on the differenced series
+adf_test_diff <- ur.df(diff_close, type = "drift", lags = 1, selectlags = "AIC")
+
+# Print ADF test results on the differenced
+summary(adf_test_diff)
+
+# Perform ADF test on the differenced series
+result_diff <- adf.test(diff_close, alternative = "stationary")
+
+# Print ADF test results for the differenced series
+print(result_diff)
+```
+
+**Interpretation**
+
+>By employing two different types of Augmented Dickey-Fuller (ADF) tests initially, both tests failed to provide sufficient evidence to reject the null hypothesis. However, once we applied a first-order differencing to the original data before conducting the ADF test, the transformed data yielded significant evidence to reject the null hypothesis.
+
+>In the ADF test performed using the tseries library, we obtained a p-value of 0.01 for the differenced data. The p-value (0.01) is less than the typical significance level of 0.05. Therefore, you should reject the null hypothesis that the differenced series is non-stationary. The results suggest that the differenced series is likely stationary, which is a common assumption for time series analysis.
+
+>In summary, based on these ADF test results for the differenced series, we can reject the null hypothesis in favor of stationarity.

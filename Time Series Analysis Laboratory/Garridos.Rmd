@@ -1,0 +1,94 @@
+---
+title: "Monthly Airline Passenger Decomposition"
+author: "Garridos, Charlene P."
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    number_section: true
+---
+
+# Historical Plot
+
+```{r, fig.height=3.2, fig.align='center'}
+plot(AirPassengers, main ="Monthly Totals of Airline Passengers", 
+     ylab = "Number of Passengers (1000s)")
+```
+
+# Decomposition
+
+To have a better understanding of how these components relate to the observed dataset, decompose the data down into its trend, seasonality, and random error components.
+
+```{r, fig.align='center'}
+plot(decompose(AirPassengers, type = "multiplicative"))
+```
+
+
+# Components
+
+## Trend
+
+```{r, fig.height=4, fig.align='center'}
+plot(decompose(AirPassengers)$trend, ylab = "Number of Passengers (1000s)")
+```
+
+## Seasonal
+
+```{r, fig.height=3.6, fig.align='center'}
+plot(decompose(AirPassengers)$season, ylab = "Number of Passengers (1000s)")
+```
+
+## Irregular or Random
+
+```{r, fig.height=4, fig.align='center'}
+plot(decompose(AirPassengers)$random, ylab = "Number of Passengers (1000s)")
+```
+
+# Seasonal Effect
+
+```{r, fig.height=4, fig.align='center'}
+#trend cycle
+# in R, when n is even, it automatically compute also the 2-(n-ma)
+
+tc = forecast::ma(AirPassengers,12)
+plot(tc, main="Trend-Cylce (2 x 12-MA)",ylab="Number of Passengers (1000s)")
+
+# using the additive model
+dt = AirPassengers-tc
+plot(dt,main="detrended",ylab="Number of Passengers (1000s)")
+```
+
+```{r,fig.height=4, fig.align='center'}
+# Seasonal Factor
+## length of ts
+L <- length(dt)
+## frequency (ie, 12)
+ff <- 12
+## number of periods (years); %/% is integer division
+periods <- L%/%ff
+## index of cumulative month
+index <- seq(1, L, by = ff) - 1
+## get mean by month
+sf <- numeric(ff)
+for (i in 1:ff) {
+sf[i] <- mean(dt[index + i], na.rm = TRUE)
+}
+month = c("January", "February","March","April","May",
+"June","July","August","September","October",
+"November","December")
+season_data = data.frame("Month"= month, "Seasonal.Factor"=sf )
+knitr::kable(season_data,caption = "Seasonal Factor for each Seasonal Indices (Months)",
+digits = 4)
+
+## plot the monthly seasonal effects
+plot.ts(sf, ylab = "Seasonal effect", xlab = "Month", cex = 1,main="Seasonal Factor")
+```
+
+```{r,fig.height=4, fig.align='center'}
+## seasonal component estimate
+season_comp <- ts(rep(sf, periods + 1)[seq(L)], start = start(dt),frequency = ff)
+plot(season_comp,main="Seasonal Component Estimates",ylab="Number of Passengers (1000s)" )
+```
+
+
+
