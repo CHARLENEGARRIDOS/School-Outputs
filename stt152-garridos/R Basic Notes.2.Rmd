@@ -1,0 +1,152 @@
+---
+title: "R Basic Notes.2"
+author: "Charlene Garridos"
+date: '2023-03-27'
+output: 
+  pdf_document:
+    highlight: tango
+---
+
+```{r, echo=TRUE}
+names <- c("Charl", "Garridos")
+ages <- c(20, 20)
+(df <- data.frame(names, ages))
+```
+
+```{r, echo=TRUE}
+str(df)
+```
+
+```{r, echo=TRUE}
+dim(df)
+```
+# url of data set
+```{r, echo=TRUE}
+url <- "https://raw.githubusercontent.com/msuiitdmsgabriel/datasets-regression/main/salespeople.csv"
+```
+# load the data set and store it as a dataframe  called salespeople
+```{r, echo=TRUE}
+salespeople <- read.csv(url)
+local_salespeople <- read.csv("salespeople.csv")
+```
+
+```{r, echo=TRUE}
+dim(salespeople)
+```
+
+```{r, echo=TRUE}
+head(salespeople)
+```
+
+```{r, echo=TRUE}
+salespeople$sales[6]
+```
+
+```{r, echo=TRUE}
+salespeople$sales
+```
+
+```{r, echo=TRUE}
+View(salespeople)
+```
+
+```{r, echo=TRUE}
+salespeople[34, 4]
+```
+
+```{r, echo=TRUE}
+salespeople[34,]
+```
+
+```{r, echo=TRUE}
+salespeople[,4]
+```
+
+```{r, echo=TRUE}
+str(salespeople)
+```
+
+```{r, echo=TRUE}
+summary(salespeople)
+```
+
+```{r, echo=TRUE}
+sum(is.na(salespeople))
+```
+
+```{r, eval=FALSE}
+is.na(salespeople)
+```
+
+```{r, echo=TRUE}
+complete.cases(salespeople)
+```
+
+```{r, eval=FALSE}
+salespeople[complete.cases(salespeople),]
+```
+
+```{r, echo=TRUE}
+salespeople <- salespeople[complete.cases(salespeople),]
+```
+
+```{r, eval=FALSE}
+is.na(salespeople)
+```
+
+```{r, echo=TRUE}
+sum(is.na(salespeople))
+```
+
+```{r, echo=TRUE}
+unique(salespeople$performance)
+```
+
+```{r, echo=TRUE}
+salespeople$performance
+```
+
+```{r, echo=TRUE}
+as.factor(salespeople$performance)
+```
+
+```{r, echo=TRUE}
+salespeople$performance <- as.factor(salespeople$performance)
+str(salespeople)
+```
+# Manipulating Dataframes
+```{r, echo=TRUE}
+(sales_720 <- subset(salespeople, subset = sales == 720))
+```
+
+```{r, echo=TRUE}
+unique(salespeople$sales)
+```
+
+```{r, echo=TRUE}
+(subset(salespeople, subset = sales >= 700))
+```
+
+```{r, echo=TRUE}
+high_sales <- subset(salespeople, subset = sales >= 700)
+head(high_sales)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

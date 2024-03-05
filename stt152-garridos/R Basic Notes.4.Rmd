@@ -1,0 +1,170 @@
+---
+title: "Untitled"
+author: "Charlene Garridos"
+date: '2023-04-03'
+output: 
+  pdf_document:
+    highlight: tango
+---
+
+```{r}
+url <- "https://raw.githubusercontent.com/msuiitdmsgabriel/datasets-regression/main/salespeople.csv"
+```
+
+```{r}
+salespeople <- read.csv(url)
+local_salespeople <- read.csv("salespeople.csv")
+```
+
+# create df_report function
+```{r, echo=TRUE}
+df_report <- function(df){paste("This dataframe contains", nrow(df), "rows and", ncol(df), "columns. There are", sum(is.na(df)), "NA entries")}
+```
+
+```{r}
+df_report(mtcars)
+```
+
+```{r}
+paste("This is how the paste", "functioning works")
+```
+# installing packages
+```{r, error=TRUE}
+my_packages <- c("MASS", "DescTools", "dplyr")
+install.packages(my_packages)
+```
+
+```{r}
+installed.packages("MASS")
+```
+ 
+```{r}
+my_packages <- c("DescTools", "dplyr")
+```
+
+```{r}
+installed.packages("my_packages")
+```
+
+```{r}
+library(MASS)
+```
+
+```{r}
+help(package = "MASS")
+```
+# The pipe operator
+```{r}
+sales <- subset(salespeople, subset = sales < 500)
+```
+
+```{r}
+mean(sales$sales)
+```
+
+```{r}
+mean(subset(salespeople, subset = sales <500) $ sales)
+```
+
+```{r}
+mean(subset(salespeople$sales, subset = salespeople$sales<500))
+```
+
+# Load magrittr library to get the pipe operator
+```{r}
+library(magrittr)
+```
+#Use the pipe operator to lay out the steps more logically
+```{r}
+subset(salespeople$sales, subset = salespeople$sales < 500) %>%
+mean()
+```
+```{r}
+library(magrittr)
+subset(salespeople, subset = sales < 500)$sales %>%
+mean()
+```
+
+```{r}
+salespeople$sales %>% # start with all data
+  subset(subset = salespeople$sales < 500) %>% # get the subsetted data
+  mean() %>% # take the mean value
+  round() # round to the nearest time
+```
+# Errors, warnings and messages
+```{r, error=TRUE}
+subset(salespeople, subset = sales = 700)
+```
+```{r}
+subset(salespeople, subset = sales == 700)
+```
+ 
+```{r, error=TRUE}
+head[salespeople]
+```
+ 
+```{r}
+head(salespeople)
+```
+ 
+```{r}
+salespeople[1,0]
+```
+
+# plotting and graphing
+## scatter plot of customer_rate against sales
+```{r}
+plot(x =  salespeople$sales, y =  salespeople$customer_rate, xlab = "Sales ($m)", ylab = "Average customer rating", main = "Scatterplot of Slaes vs Customer rating")
+```
+
+# Convert performance ratings back to numeric data type for histogram
+```{r}
+salespeople$performance <- as.numeric(salespeople$performance)
+```
+#histogram of performance ratings
+```{r}
+hist(salespeople$performance)
+```
+```{r}
+hist(salespeople$performance, xlab = "Performance Ratings", ylab = "none", main = "Histogram of performance ratings")
+hist(salespeople$performance, breaks = 0:4)
+```
+
+## box plot of sales by performance rating
+```{r}
+boxplot(formula = sales ~ performance, data = salespeople,
+        xlab = "Performance Rating", ylab = "Sales ($m)",
+        main = "Boxplot of Sales by Performance Rating")
+```
+
+# Specialist plotting and graphing packages
+## convert performance and promotion to categorical
+
+```{r}
+install.packages(
+   "ggplot2",
+   repos = c("http://rstudio.org/_packages",
+   "http://cran.rstudio.com")
+)
+```
+
+```{r}
+library(GGally)
+```
+
+```{r}
+salespeople$promoted <- as.factor(salespeople$promoted)
+salespeople$performance <- as.factor(salespeople$performance)
+```
+
+## Pairplot of salespeople
+```{r, warning=FALSE}
+GGally::ggpairs(salespeople)
+```
+
+
+ 
+ 
+ 
+ 
+ 
